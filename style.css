@@ -1,0 +1,64 @@
+/*
+Universelle styler
+*/
+
+body {
+    background-color: wheat;
+    background-image: url("ng.jpg");
+    background-size: cover
+}
+p {text-align: center;
+   color:black;}
+
+/*
+Stylen til de forskjellige elementene med id'er
+id = "id"  -> #id
+*/
+#logo {text-align: center}
+#gif {text-align: center}
+#info {background-color: bisque;
+        background-blend-mode: color-burn;}
+#footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: red;
+    color: white;
+    text-align: center;
+  }
+
+/*
+Info til menyen, ihvertfall ikke kopiert fra internett
+*/
+.vertical-menu {
+width: 200px; /* Set a width if you like */
+}
+
+.vertical-menu a {
+background-color: #eee; /* Grey background color */
+color: black; /* Black text color */
+display: block; /* Make the links appear below each other */
+padding: 12px; /* Add some padding */
+text-decoration: none; /* Remove underline from links */
+}
+
+.vertical-menu a:hover {
+background-color: #ccc; /* Dark grey background on mouse-over */
+}
+
+.vertical-menu a.active {
+background-color: #4CAF50; /* Add a green color to the "active/current" link */
+color: white;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+  }
+  .grid-item {
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+  }
