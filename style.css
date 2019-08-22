@@ -3,62 +3,79 @@ Universelle styler
 */
 
 body {
-    background-color: wheat;
-    background-image: url("ng.jpg");
-    background-size: cover
+background-color: wheat;
+background-image: url("ng.jpg");
+background-size: cover
 }
-p {text-align: center;
-   color:black;}
+p {
+text-align: center;
+color:black;
+}
+header {
+text-align: center;
+}
 
 /*
 Stylen til de forskjellige elementene med id'er
 id = "id"  -> #id
 */
-#logo {text-align: center}
-#gif {text-align: center}
-#info {background-color: bisque;
-        background-blend-mode: color-burn;}
+#logo {
+text-align: center;
+}
+#gif {
+text-align: center;
+}
+#info {
+background-color: bisque;
+background-blend-mode: color-burn;
+}
 #footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: red;
-    color: white;
-    text-align: center;
-  }
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+background-color: red;
+color: white;
+text-align: center;
+}
 
+.logo {
+text-align: center;
+}
 /*
-Info til menyen, ihvertfall ikke kopiert fra internett
+Info til menyen
 */
 .vertical-menu {
-width: 200px; /* Set a width if you like */
+width: 200px;
 }
 
 .vertical-menu a {
-background-color: #eee; /* Grey background color */
-color: black; /* Black text color */
-display: block; /* Make the links appear below each other */
-padding: 12px; /* Add some padding */
-text-decoration: none; /* Remove underline from links */
+background-color: #eee;
+color: black;
+display: block; 
+padding: 12px; 
+text-decoration: none;
 }
 
 .vertical-menu a:hover {
-background-color: #ccc; /* Dark grey background on mouse-over */
+background-color: #ccc;
 }
 
 .vertical-menu a.active {
-background-color: #4CAF50; /* Add a green color to the "active/current" link */
+background-color: #4CAF50;
 color: white;
 }
 
+/*
+Info til grid
+*/
 .grid-container {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    padding: 10px;
-  }
-  .grid-item {
-    padding: 20px;
-    font-size: 30px;
-    text-align: center;
-  }
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+padding: 10px;
+}
+.grid-item {
+padding: 40px;
+font-size: 30px;
+text-align: center;
+}
