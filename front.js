@@ -1,8 +1,14 @@
 window.onload = function() {
+    let button = document.getElementById("testBTN");
+    button.addEventListener("click", function(){
+        addArticle();
+    });
     //initialize();
 }
 
 function initialize(){
+    console.log("initialize");
+
     // get articles from sql
     var con = connect();
     
@@ -13,6 +19,8 @@ function initialize(){
 }
 
 function connect(){
+    console.log("connect");
+
     var mysql = require('mysql');
 
     var con = mysql.createConnection({
@@ -30,7 +38,31 @@ function connect(){
 }
 
 function getProperties(){
+    console.log("getProperties");
+
     fetch('file.txt')
     .then(response => response.text())
     .then(text => console.log(text))
+}
+
+var counter = 0;
+function addArticle(){
+    counter++;
+    console.log("addArticle");
+
+    // create node
+    var node = document.createElement("p");
+
+    // create title
+    var title = document.createTextNode("BREAKING NEWS "+ counter);
+
+    // append title to node
+    node.appendChild(title);
+
+    // gove node correct class for formatting
+    node.className = "post";
+
+    // add to page
+    document.getElementById("content").appendChild(node);
+
 }
