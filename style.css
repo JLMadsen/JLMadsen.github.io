@@ -1,0 +1,4 @@
+#column {
+    display: grid;
+    grid: 1fr;
+}
