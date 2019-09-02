@@ -13,6 +13,7 @@ function initialize(){
     var con = connect();
     
     // add newsitems
+    addArticle();
 
     // add liveitems
 
@@ -49,6 +50,15 @@ var counter = 0;
 function addArticle(){
     counter++;
     console.log("addArticle");
+
+    /**
+     * contains:
+     * title
+     * picture
+     * text
+     * time and date
+     * importance
+     */
 
     // create node
     var node = document.createElement("p");
