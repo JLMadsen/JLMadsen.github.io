@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: CommitHandler.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: CommitHandler.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Implementation of the Two Phase Commit protocol (2PC)
+ * Created for TDAT2004 project.
+ *
+ * @author https://github.com/JLMadsen
+ */
+export class CommitHandler {
+    websocket;
+
+    // overridable methods
+    onLog;
+    onError;
+    onSetup;
+    onPhaseChange;
+    onVote;
+
+    // log with all network packets
+    log;
+    clientId;
+
+    globalBalance;
+    localBalance;
+    oldBalance; // holds the value while voting.
+    WriteAheadLog;
+
+    isCoordinator;
+    isVoting;
+    isSender; // sender does not need to compare local changes
+    isFresh;  // fresh client does not need to compare local changes
+    votes;
+    amountOfClients;
+
+    /**
+     * Initialize all variables.
+     * TODO add config param.
+     */
+    constructor() {
+        this.log = "";
+        this.clientId = 0;
+
+        this.globalBalance = 0;
+        this.localBalance = 0;
+        this.oldBalance = 0;
+        this.WriteAheadLog = [];
+
+        this.isCoordinator = false;
+        this.isVoting = false;
+        this.isSender = false;
+        this.isFresh = true;
+        this.votes = [];
+        this.amountOfClients = 0;
+    }
+
+    /**
+     * Connects the CommitHandler to the socket server.
+     * Default host is "ws://localhost:4001".
+     * This method defines the socket behaviour.
+     *
+     * @return void
+     */
+    connect() {
+        console.log('connecting to socket');
+
+        this.websocket = new WebSocket("ws://localhost:4001");
+
+        this.websocket.onopen = () => {
+            this._appendLog("Connected to socket");
+        };
+
+        this.websocket.onerror = (err) => {
+            this._appendLog("Socket error!");
+            console.log(err);
+        };
+
+        this.websocket.onmessage = (event) => {
+            let data = event.data.split(',');
+            let opcode = data[0];
+            this._appendLog(data);
+
+            switch (opcode) {
+                case Action.setup:
+                    return this._handleSetup(data);
+
+                case Action.commit:
+                    return this._handleCommit(data);
+
+                case Action.requestVote:
+                    return this._handleRequestVote(data);
+
+                case Action.vote:
+                    return this._handleVote(data);
+
+                case Action.success:
+                    return this._handleSuccess(data);
+
+                case Action.rollback:
+                    return this._handleRollback(data);
+
+                default:
+                    if(this.onError) this.onError("Unrecognized opcode", "warning");
+            }
+        }
+    }
+
+    /**
+     * Reset the localBalance back to the globalBalance.
+     * If the config has overwrite: false, the client needs to reset the localBalance or commit to be able to recieve new commits.
+     */
+    resetBalance() {
+
+        this.localBalance = this.globalBalance;
+    }
+
+    /**
+     * Method for client to set the Balance.
+     * @param balance
+     */
+    setBalance(balance){
+
+        this.localBalance = balance;
+    }
+
+    /**
+     * Starts the commit phase.
+     * Requires isVoting to be false.
+     */
+    execCommit() {
+        if(this.isVoting) {
+            return
+        }
+
+        this.isSender = true;
+        this.isVoting = true;
+        this.votes = [];
+
+        // reset visual error, could move this out
+        if(this.onError) this.onError('', 'primary');
+
+        let commit =
+            Action.commit +','+
+            this.clientId +','+
+            this.localBalance;
+
+        this.websocket.send(commit);
+    }
+
+    /**
+     * Handles data related to number of clients and isCoordinator status.
+     * @param data
+     * @private
+     */
+    _handleSetup(data) {
+
+        if(data[1] === Action.newClient) {
+            this.amountOfClients = parseInt(data[2]);
+            if(this.onSetup) this.onSetup(this.amountOfClients, this.isCoordinator);
+            return;
+        }
+
+        if(data[2].includes("coordinator")) {
+            this.isCoordinator = true;
+        }
+
+        this.clientId = parseInt(data[1]);
+    }
+
+    /**
+     * Inform client of new phase.
+     * If coordinator send requestVote message.
+     * @param data
+     * @private
+     */
+    _handleCommit(data) {
+
+        if(this.onPhaseChange) this.onPhaseChange(Action.commit, parseInt(data[2]));
+
+        if(this.isCoordinator) {
+
+            let request =
+                Action.requestVote +','+
+                this.clientId  +','+
+                data[2];
+
+            this.websocket.send(request);
+        }
+    }
+
+    /**
+     * All clients vote on incoming commit data.
+     * Checks if there are local changes and if onNewPhase method has been implemented.
+     * @param data
+     * @private
+     */
+    _handleRequestVote(data) {
+
+        this.isVoting = true;
+        let commitBalance = parseInt(data[2]);
+
+        this.WriteAheadLog.push(commitBalance);
+        this.oldBalance = this.localBalance;
+        this.localBalance = commitBalance;
+
+        let ok = true;
+        let desc;
+
+        if(!Config.alwaysTrue &amp;&amp; !this.isSender) {
+            // if client has local changes
+            // this can be disabled in config
+            if(!Config.overwrite) {
+                if(!this.isFresh) {
+                    console.log(this.oldBalance !== this.globalBalance);
+                    if(this.oldBalance !== this.globalBalance) {
+                        ok = false;
+                        desc = Action.dataMismatch;
+                    }
+                }
+            }
+
+            // this checks if the onPhaseChange method has been implemented
+            if(Config.requireWrite) {
+                if (!this.onPhaseChange) {
+                    ok = false;
+                    desc = Action.writeError;
+                }
+            }
+        }
+
+        let vote =
+            Action.vote +','+
+            this.clientId +',';
+
+        if(ok){
+            vote += Action.voteYes;
+        } else {
+            vote += Action.voteNo;
+        }
+
+        // if voted no we have error message
+        if(desc) vote += ","+ desc;
+
+        // slow down system to see communication
+        if(Config.timedAnswer) {
+
+            let timeout = Math.random() * (7000 - 2500) + 2500;
+            setTimeout(() => {this.websocket.send(vote);}, timeout);
+
+        } else {
+
+            this.websocket.send(vote);
+        }
+    }
+
+    /**
+     * Inform client of new votes.
+     * If coordinator count votes and send result when all votes are counted.
+     * @param data
+     * @private
+     */
+    _handleVote(data) {
+        let res = new Vote();
+        res.id = parseInt(data[1]);
+        res.yes = (data[2] === Action.voteYes);
+
+        this.votes.push(res);
+        if(this.onVote) this.onVote(this.votes);
+
+        console.log("isCoordinator: "+ this.isCoordinator);
+        if(this.isCoordinator) {
+            if(this.votes.length === this.amountOfClients) {
+
+
+                let successes = 0;
+                for(let i=0; i&lt;this.votes.length; i++){
+                    if(this.votes[i].yes){
+                        successes++;
+                    }
+                }
+
+                console.log(successes);
+
+                if(successes === this.amountOfClients) {
+                    this.websocket.send(Action.success +','+ this.clientId);
+                } else {
+                    this.websocket.send(Action.rollback +','+ this.clientId);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sends client new balance and state change.
+     * @param data
+     * @private
+     */
+    _handleSuccess(data) {
+
+        this.localBalance = this.WriteAheadLog[this.WriteAheadLog.length -1];
+        this.globalBalance = this.localBalance;
+
+        if(this.onPhaseChange) this.onPhaseChange(Action.success, this.localBalance);
+        if(this.onError) this.onError("Commit successful!", "success");
+
+        this._resetStates();
+    }
+
+    /**
+     * Sends client old balance and state change.
+     * @param data
+     * @private
+     */
+    _handleRollback(data) {
+
+        this.localBalance = this.oldBalance;
+
+        if(this.onPhaseChange) this.onPhaseChange(Action.rollback, this.oldBalance);
+        if(this.onError) this.onError("Commit failed.", "danger");
+
+        this._resetStates();
+    }
+
+    /**
+     * CommitHandler state resets and is ready for new commit.
+     * @private
+     */
+    _resetStates() {
+        this.isVoting = false;
+        this.isFresh = false;
+        this.isSender = false;
+        this.votes = [];
+    }
+
+    /**
+     * Updates network log and sends it to client if onLog method has been implemented.
+     * @param content
+     * @private
+     */
+    _appendLog(content){
+        this.log += content + "\n";
+        if(this.onLog) this.onLog(this.log);
+    }
+}
+
+/**
+ * JSON object for easy Action identification.
+ * @type {{newClient: string, rollback: string, acknowledge: string, requestVote: string, voteNo: string, voteYes: string, success: string, commit: string, setup: string, vote: string, dataMismatch: string, writeError: string}}
+ */
+export let Action = {
+    // startup
+    setup: "Setup",
+    newClient: "NewClient",
+
+    // phases
+    commit: "Commit",
+    requestVote: "RequestVote",  // send to participants
+    vote: "Vote",                // send to coordinator with answer
+
+    // voting
+    voteYes: "VoteYes",
+    voteNo: "VoteNo",
+
+    // commit
+    success: "Success",
+    rollback: "Rollback",
+    acknowledge: "Acknowledge",
+
+    // abort message
+    dataMismatch: "DataMismatch",
+    writeError: "WriteError"
+};
+
+/**
+ * Simple vote class.
+ * Contains whether client voted yes and their id.
+ */
+export class Vote{
+    yes;
+    id;
+    voted = false;
+}
+
+/**
+ * Config JSON for altering the behaviour of CommitHandler
+ * @type {{requireWrite: boolean, alwaysTrue: boolean, timedAnswer: boolean, overwrite: boolean, key: string}}
+ */
+let Config = {
+
+    // forces client to vote yes
+    alwaysTrue: false,
+
+    // sets timeout on vote response
+    // only used for demo, otherwise everything happens instantly
+    timedAnswer: true,
+
+    // overwrite local changes
+    // if false it will vote no if there are changes.
+    overwrite: false,
+
+    // for p2p encryption
+    // Not yet implemented
+    key: "",
+
+    // require that the client implements the phaseChange method
+    requireWrite: true,
+
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="CommitHandler.html">CommitHandler</a></li><li><a href="Vote.html">Vote</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Action">Action</a></li><li><a href="global.html#Config">Config</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Thu Apr 16 2020 11:50:56 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
