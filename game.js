@@ -75,6 +75,8 @@ let Shot = function(start, stop) {
         this.x += this.xVel;
         this.y += this.yVel;
 
+        drawTail(this, 5);
+
         physicalObjects.forEach(obj => {
             if(!obj.isPlayer) {
                 if(isIntersecting(this, obj)) {
@@ -122,6 +124,8 @@ let PhysicalObject = function(x, y, w, h) {
     this.nextFrame = function() {
         if(this.isPlayer) {
             movePlayer();
+        } else {
+            drawTail(this, 15);
         }
 
         this.x += this.xVel;
@@ -244,9 +248,13 @@ function getCursorPosition(event) {
     return [x, y];
 }
 
-// TODO: draw a tail, so its like a arrow or something ¯\_(ツ)_/¯
-function drawTail(shot) {
+function drawTail(obj, length) {
 
+    ctx.beginPath();
+    ctx.fillStyle = '#000000';
+    ctx.moveTo(obj.x, obj.y);
+    ctx.lineTo(obj.x - obj.xVel * length, obj.y - obj.yVel * length);
+    ctx.stroke();
 }
 
 function fillCircle(obj) {
