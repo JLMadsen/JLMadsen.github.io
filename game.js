@@ -31,6 +31,9 @@ let kw = false,
     kd = false;
 
 let score = 0;
+let hold = false; // holding mouse down
+let mouseX  = 0,
+    mouseY = 0;
 
 // Init
 
@@ -41,8 +44,8 @@ let win = window,
     width = win.innerWidth || e.clientWidth || g.clientWidth,
     height = win.innerHeight || e.clientHeight || g.clientHeight;
 
-width *= 0.90;
-height *= 0.90;
+width *= 0.85;
+height *= 0.85;
 
 var physicalObjects = [];
 var shots = [];
@@ -77,10 +80,11 @@ let Shot = function(start, stop) {
     this.nextFrame = function() {
         if(!this.isStuck) {
             this.yVel += GRAV / 250;
+            this.x += this.xVel;
+            this.y += this.yVel;
         }
 
-        this.x += this.xVel;
-        this.y += this.yVel;
+
 
         drawTail(this, 5);
 
@@ -100,8 +104,6 @@ let Shot = function(start, stop) {
                 }
             } else if (!obj.isShootable) {
                 if(isIntersectingRect(this, obj)) {
-                    this.xVel = 0;
-                    this.yVel = 0;
                     this.isStuck = true;
                 }
             }
@@ -172,9 +174,9 @@ let PhysicalObject = function(x, y, w, h) {
 function frameRender() {
     ctx.clearRect(0, 0, width, height);
 
-    let grd = ctx.createLinearGradient(0, 0, 0, 170);
-    grd.addColorStop(0, 'blue');
-    grd.addColorStop(1, 'lightblue')
+    let grd = ctx.createLinearGradient(width/2, 0, width/2, height);
+    grd.addColorStop(0, 'SteelBlue');
+    grd.addColorStop(1, 'LightSkyBlue')
 
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, width, height);
@@ -202,7 +204,6 @@ function frameRender() {
         }
 
         obj.nextFrame();
-        //console.log(player.xVel, player.yVel);
 
     });
 
@@ -212,13 +213,7 @@ function frameRender() {
             shots.splice(shots.indexOf(obj), 1);
         } else {
 
-            ctx.fillStyle = "#000000";
-            /*ctx.fillRect(
-                obj.x,
-                obj.y,
-                obj.width,
-                obj.height
-            );*/
+            ctx.fillStyle = "brown";
 
             fillCircle(obj);
 
@@ -297,26 +292,35 @@ function normalizeVec(pos1, pos2) {
 }
 
 function isIntersectingRect(obj1, obj2) {
-    return !((obj1.x-obj1.width/2)  > (obj2.x+obj2.width/2) ||
-             (obj1.x+obj1.width/2)  < (obj2.x-obj2.width/2) ||
-             (obj1.y-obj1.height/2) > (obj2.y+obj2.height/2) ||
-             (obj1.y+obj1.height/2) < (obj2.y-obj2.height/2))
+    return !((obj1.x)             > (obj2.x+obj2.width)  ||
+             (obj1.x+obj1.width)  < (obj2.x)             ||
+             (obj1.y)             > (obj2.y+obj2.height) ||
+             (obj1.y+obj1.height) < (obj2.y))
 }
 
 function isIntersectingCirc(obj1, obj2) {
-    let dx = obj2.x - obj1.x;
-    let dy = obj2.y - obj1.y;
+    let dx   = obj2.x - obj1.x;
+    let dy   = obj2.y - obj1.y;
     let dist = Math.sqrt(dx*dx + dy*dy);
     return dist < obj1.width/2 + obj2.width/2;
 }
 
 function mouseClick(e) {
-    let pos = getCursorPosition(e);
+    hold = true;
+    setMousePos(e);
+    shoot();
+}
 
+function shoot() {
     shots.push(
-        new Shot([player.x, player.y], pos)
+        new Shot([player.x, player.y], [mouseX, mouseY])
     );
+}
 
+function setMousePos(e) {
+    let pos = getCursorPosition(e);
+    mouseX = pos[0];
+    mouseY = pos[1];
 }
 
 function movePlayer() {
@@ -328,42 +332,28 @@ function movePlayer() {
 }
 
 canvas.addEventListener('mousedown', mouseClick);
+canvas.addEventListener('mouseup', () => {hold = false;})
+//canvas.addEventListener('mousemove', setMousePos) // bad for performance, dont need to set every change
 canvas.addEventListener('keydown', onKeyDown);
 canvas.addEventListener('keyup', onKeyUp);
 
 function onKeyDown(event) {
     var keyCode = event.keyCode;
     switch (keyCode) {
-        case 68: //d
-        kd = true;
-        break;
-        case 83: //s
-        ks = true;
-        break;
-        case 65: //a
-        ka = true;
-        break;
-        case 87: //w
-        kw = true;
-        break;
+        case 68: kd = true; break;
+        case 83: ks = true; break;
+        case 65: ka = true; break;
+        case 87: kw = true; break;
     }
 }
 
 function onKeyUp(event) {
     var keyCode = event.keyCode;
     switch (keyCode) {
-        case 68: //d
-        kd = false;
-        break;
-        case 83: //s
-        ks = false;
-        break;
-        case 65: //a
-        ka = false;
-        break;
-        case 87: //w
-        kw = false;
-        break;
+        case 68: kd = false; break;
+        case 83: ks = false; break;
+        case 65: ka = false; break; 
+        case 87: kw = false; break;
     }
 }
 
@@ -390,26 +380,23 @@ frameRenderLoop();
 let rand = MAX_OBJECTS;
 
 for(let i = 0 ; i < rand ; i++) {
-    let temp = new PhysicalObject(width/2, height-20, 20, 20);
+    let temp = new PhysicalObject(width/2, height-30, 20, 20);
     temp.addXVel(random(-1, 1)).addYVel(random(-1.49, -1));
     physicalObjects.push(temp);
 }
 
-let ground1 = new PhysicalObject(0, height-20, width, 80)
-ground1.isRect = true;
-ground1.color = '#556B2F';
-ground1.isShootable = false;
+let ground = new PhysicalObject(0, (height-50), width, 50)
+ground.isRect = true;
 
-let ground2 = new PhysicalObject(0, height-10, width, 50)
-ground2.isRect = true;
-ground2.color = '#808000';
-ground2.isShootable = false;
+let grndgrad = ctx.createLinearGradient(0, ground.y, 0, height);
+grndgrad.addColorStop(0.5, 'DarkGreen');
+grndgrad.addColorStop(1, 'Tan')
+
+ground.color = grndgrad;
+ground.isShootable = false;
 
 physicalObjects.push(
-    ground1
-)
-physicalObjects.push(
-    ground2
+    ground
 )
 
 let player = new PhysicalObject(100, 100, 10, 10);
