@@ -179,6 +179,7 @@ function frameRender() {
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, width, height);
 
+    ctx.fillStyle = '#000000';
     ctx.font = "30px Arial";
     ctx.fillText("Score: " + score.toString(), 10, 50);
     ctx.fillText("Remaining: " + (MAX_OBJECTS-score+1).toString(), 10, 80);
