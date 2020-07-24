@@ -8,6 +8,7 @@ canvas {
     margin-left: auto;
     margin-right: auto;
     display: block;
+    border: 1px solid darkcyan
 }
 
 h1 {

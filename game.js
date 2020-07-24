@@ -82,9 +82,17 @@ let Shot = function(start, stop) {
 
         physicalObjects.forEach(obj => {
             if(!obj.isPlayer) {
-                if(isIntersecting(this, obj)) {
-                    score++;
-                    physicalObjects.splice(physicalObjects.indexOf(obj),1);
+                if(obj.isRect) {
+                    if(isIntersectingRect(this, obj)) {
+                        score++;
+                        physicalObjects.splice(physicalObjects.indexOf(obj),1);
+                    }
+                }
+                else {
+                    if(isIntersectingCirc(this, obj)) {
+                        score++;
+                        physicalObjects.splice(physicalObjects.indexOf(obj),1);
+                    }
                 }
             }
         })
@@ -137,13 +145,12 @@ let PhysicalObject = function(x, y, w, h) {
         if(this.isPlayer) {
             screenLoop(this);
         } else {
-            return;
-            if(this.x < width || this.x > width) {
-                this.x -= xVel;
+            if(this.x < 0 || this.x > width) {
+                this.xVel = 0;
             }
 
-            if(this.y < height || this.y > height) {
-                this.y -= yVel;
+            if(this.y < 0 || this.y > height) {
+                this.yVel = 0;
             }
         }
     }
@@ -269,11 +276,18 @@ function normalizeVec(pos1, pos2) {
     return vector;
 }
 
-function isIntersecting(obj1, obj2) {
+function isIntersectingRect(obj1, obj2) {
     return !((obj1.x-obj1.width/2)  > (obj2.x+obj2.width/2) ||
              (obj1.x+obj1.width/2)  < (obj2.x-obj2.width/2) ||
              (obj1.y-obj1.height/2) > (obj2.y+obj2.height/2) ||
              (obj1.y+obj1.height/2) < (obj2.y-obj2.height/2))
+}
+
+function isIntersectingCirc(obj1, obj2) {
+    let dx = obj2.x - obj1.x;
+    let dy = obj2.y - obj1.y;
+    let dist = Math.sqrt(dx*dx + dy*dy);
+    return dist < obj1.width/2 + obj2.width/2;
 }
 
 function mouseClick(e) {
@@ -360,6 +374,14 @@ for(let i = 0 ; i < rand ; i++) {
     temp.addXVel(random(-1, 1)).addYVel(random(-1.49, -1));
     physicalObjects.push(temp);
 }
+
+let ground = new PhysicalObject(width/2, height-1, width, 20)
+ground.isRect = true;
+ground.color = '#32CD32';
+
+physicalObjects.push(
+    ground
+)
 
 let player = new PhysicalObject(100, 100, 10, 10);
 player.color = "#000000";
