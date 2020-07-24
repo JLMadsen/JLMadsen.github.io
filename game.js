@@ -21,6 +21,7 @@ const MOVEMENT_SPEED = 1.5;
 const SHOT_TTL = 750;
 const SHOT_VEL = 4;
 const GRAV = 9.81;
+const PLAYER_SVG = new Path2D
 
 // VARS
 
@@ -32,6 +33,7 @@ let kw = false,
 
 let score = 0;
 let hold = false; // holding mouse down
+let mouseFrame = 0;
 let mouseX  = 0,
     mouseY = 0;
 
@@ -149,7 +151,7 @@ let PhysicalObject = function(x, y, w, h) {
         if(this.isPlayer) {
             movePlayer();
         } else {
-            drawTail(this, 15);
+            drawTail(this, 20);
         }
 
         this.x += this.xVel;
@@ -176,7 +178,7 @@ function frameRender() {
 
     let grd = ctx.createLinearGradient(width/2, 0, width/2, height);
     grd.addColorStop(0, 'SteelBlue');
-    grd.addColorStop(1, 'LightSkyBlue')
+    grd.addColorStop(1, 'LightSkyBlue');
 
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, width, height);
@@ -184,13 +186,18 @@ function frameRender() {
     ctx.fillStyle = '#000000';
     ctx.font = "30px Arial";
     ctx.fillText("Score: " + score.toString(), 10, 50);
-    ctx.fillText("Remaining: " + (MAX_OBJECTS-score+1).toString(), 10, 80);
+    ctx.fillText("Remaining: " + (MAX_OBJECTS-score+1).toString(), 10, 90);
 
     physicalObjects.forEach(obj => {
 
         ctx.fillStyle = obj.color;
 
-        if (obj.isRect) {
+        if (obj.isPlayer && false) { // skip emojies, replace with svg maybe
+
+            ctx.font = "10px";
+            ctx.fillText('🏹', obj.x, obj.y);
+
+        } else if (obj.isRect) {
 
             ctx.fillRect(
                 obj.x,
@@ -200,7 +207,7 @@ function frameRender() {
             );
         } else {
             
-            fillCircle(obj)
+            fillCircle(obj);
         }
 
         obj.nextFrame();
@@ -225,6 +232,7 @@ function frameRender() {
 
 function frameRenderLoop() {
 
+    frame++;
     requestAnimationFrame(frameRenderLoop);
     frameRender();
 }
@@ -281,7 +289,9 @@ function fillCircle(obj) {
     ctx.stroke();
 }
 
-function abs(a) {return Math.abs(a)}
+function angle(vec) {return Math.atan2(vec[1], vec[0]);}
+function rad(angle) {return angle * Math.PI / 180;}
+function abs(a)     {return Math.abs(a)}
 
 function normalizeVec(pos1, pos2) {
     let dist      = [pos1[0] - pos2[0], pos1[1] - pos2[1]];
@@ -331,9 +341,16 @@ function movePlayer() {
 
 }
 
+function mouseMove(e) {
+    if(frame > mouseFrame) {
+        setMousePos(e);
+        mouseFrame = frame;
+    }
+}
+
 canvas.addEventListener('mousedown', mouseClick);
 canvas.addEventListener('mouseup', () => {hold = false;})
-//canvas.addEventListener('mousemove', setMousePos) // bad for performance, dont need to set every change
+canvas.addEventListener('mousemove', mouseMove) // bad for performance, dont need to set every change
 canvas.addEventListener('keydown', onKeyDown);
 canvas.addEventListener('keyup', onKeyUp);
 
@@ -377,9 +394,7 @@ function onKeyUp(event) {
 // Start
 frameRenderLoop();
 
-let rand = MAX_OBJECTS;
-
-for(let i = 0 ; i < rand ; i++) {
+for(let i = 0 ; i < MAX_OBJECTS ; i++) {
     let temp = new PhysicalObject(width/2, height-30, 20, 20);
     temp.addXVel(random(-1, 1)).addYVel(random(-1.49, -1));
     physicalObjects.push(temp);
@@ -389,7 +404,7 @@ let ground = new PhysicalObject(0, (height-50), width, 50)
 ground.isRect = true;
 
 let grndgrad = ctx.createLinearGradient(0, ground.y, 0, height);
-grndgrad.addColorStop(0.5, 'DarkGreen');
+grndgrad.addColorStop(0.4, 'DarkGreen');
 grndgrad.addColorStop(1, 'Tan')
 
 ground.color = grndgrad;
