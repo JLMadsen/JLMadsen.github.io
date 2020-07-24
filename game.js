@@ -172,16 +172,16 @@ let PhysicalObject = function(x, y, w, h) {
 function frameRender() {
     ctx.clearRect(0, 0, width, height);
 
-    ctx.font = "30px Arial";
-    ctx.fillText("Score: " + score.toString(), 10, 50);
-    ctx.fillText("Remaining: " + (MAX_OBJECTS-score+1).toString(), 10, 80);
-
     let grd = ctx.createLinearGradient(0, 0, 0, 170);
     grd.addColorStop(0, 'blue');
     grd.addColorStop(1, 'lightblue')
 
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, width, height);
+
+    ctx.font = "30px Arial";
+    ctx.fillText("Score: " + score.toString(), 10, 50);
+    ctx.fillText("Remaining: " + (MAX_OBJECTS-score+1).toString(), 10, 80);
 
     physicalObjects.forEach(obj => {
 
