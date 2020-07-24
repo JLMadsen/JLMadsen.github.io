@@ -1,3 +1,3 @@
 # JLMadsen.github.io
 
-<a href="jlmadsen.github.io">Play game here!</a>
+<a href="https://jlmadsen.github.io">Play game here!</a>
