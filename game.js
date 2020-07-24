@@ -67,13 +67,17 @@ let Shot = function(start, stop) {
 
     let vec = normalizeVec(start, stop)
 
+    this.isStuck = false;
+
     this.xVel = SHOT_VEL*vec[0];
     this.yVel = SHOT_VEL*vec[1];
 
     this.ttl = SHOT_TTL;
 
     this.nextFrame = function() {
-        this.yVel += GRAV / 250;
+        if(!this.isStuck) {
+            this.yVel += GRAV / 250;
+        }
 
         this.x += this.xVel;
         this.y += this.yVel;
@@ -81,7 +85,7 @@ let Shot = function(start, stop) {
         drawTail(this, 5);
 
         physicalObjects.forEach(obj => {
-            if(!obj.isPlayer) {
+            if(!(obj.isPlayer || !obj.isShootable)) {
                 if(obj.isRect) {
                     if(isIntersectingRect(this, obj)) {
                         score++;
@@ -94,6 +98,12 @@ let Shot = function(start, stop) {
                         physicalObjects.splice(physicalObjects.indexOf(obj),1);
                     }
                 }
+            } else if (!obj.isShootable) {
+                if(isIntersectingRect(this, obj)) {
+                    this.xVel = 0;
+                    this.yVel = 0;
+                    this.isStuck = true;
+                }
             }
         })
     }
@@ -101,6 +111,7 @@ let Shot = function(start, stop) {
 
 let PhysicalObject = function(x, y, w, h) {
     this.isPlayer = false;
+    this.isShootable = true;
     this.isRect = false;
 
     this.x = x;
@@ -376,12 +387,21 @@ for(let i = 0 ; i < rand ; i++) {
     physicalObjects.push(temp);
 }
 
-let ground = new PhysicalObject(width/2, height-1, width, 20)
-ground.isRect = true;
-ground.color = '#32CD32';
+let ground1 = new PhysicalObject(0, height-20, width, 80)
+ground1.isRect = true;
+ground1.color = '#556B2F';
+ground1.isShootable = false;
+
+let ground2 = new PhysicalObject(0, height-10, width, 50)
+ground2.isRect = true;
+ground2.color = '#808000';
+ground2.isShootable = false;
 
 physicalObjects.push(
-    ground
+    ground1
+)
+physicalObjects.push(
+    ground2
 )
 
 let player = new PhysicalObject(100, 100, 10, 10);
