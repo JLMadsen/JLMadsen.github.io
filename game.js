@@ -163,6 +163,7 @@ function frameRender() {
 
     ctx.font = "30px Arial";
     ctx.fillText("Score: " + score.toString(), 10, 50);
+    ctx.fillText("Remaining: " + (MAX_OBJECTS-score+1).toString(), 10, 80);
 
     physicalObjects.forEach(obj => {
 
