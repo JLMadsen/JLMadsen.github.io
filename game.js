@@ -133,6 +133,15 @@ let PhysicalObject = function(x, y, w, h) {
 
         if(this.isPlayer) {
             screenLoop(this);
+        } else {
+            return;
+            if(this.x < width || this.x > width) {
+                this.x -= xVel;
+            }
+
+            if(this.y < height || this.y > height) {
+                this.y -= yVel;
+            }
         }
     }
 }
@@ -195,23 +204,6 @@ function frameRenderLoop() {
     frameRender();
 }
 
-// Start
-
-frameRenderLoop();
-
-let rand = MAX_OBJECTS;
-
-for(let i = 0 ; i < rand ; i++) {
-    let temp = new PhysicalObject(width/2, height, 20, 20);
-    temp.addXVel(random(-1, 1)).addYVel(random(-2, -0.5));
-    physicalObjects.push(temp);
-}
-
-let player = new PhysicalObject(100, 100, 10, 10);
-player.color = "#000000";
-player.isPlayer = true;
-player.isRect = true;
-physicalObjects.push(player);
 
 
 function screenLoop(obj) 
@@ -275,8 +267,8 @@ function normalizeVec(pos1, pos2) {
 }
 
 function isIntersecting(obj1, obj2) {
-    return !((obj1.x-obj1.width/2) > (obj2.x+obj2.width/2) ||
-             (obj1.x+obj1.width/2) < (obj2.x-obj2.width/2) ||
+    return !((obj1.x-obj1.width/2)  > (obj2.x+obj2.width/2) ||
+             (obj1.x+obj1.width/2)  < (obj2.x-obj2.width/2) ||
              (obj1.y-obj1.height/2) > (obj2.y+obj2.height/2) ||
              (obj1.y+obj1.height/2) < (obj2.y-obj2.height/2))
 }
@@ -293,8 +285,8 @@ function mouseClick(e) {
 function movePlayer() {
     if (kw) {player.y += -MOVEMENT_SPEED;}
     if (ka) {player.x += -MOVEMENT_SPEED;}
-    if (ks) {player.y += MOVEMENT_SPEED;}
-    if (kd) {player.x += MOVEMENT_SPEED;}
+    if (ks) {player.y +=  MOVEMENT_SPEED;}
+    if (kd) {player.x +=  MOVEMENT_SPEED;}
 
 }
 
@@ -337,3 +329,37 @@ function onKeyUp(event) {
         break;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Start
+frameRenderLoop();
+
+let rand = MAX_OBJECTS;
+
+for(let i = 0 ; i < rand ; i++) {
+    let temp = new PhysicalObject(width/2, height-20, 20, 20);
+    temp.addXVel(random(-1, 1)).addYVel(random(-1.5, -1));
+    physicalObjects.push(temp);
+}
+
+let player = new PhysicalObject(100, 100, 10, 10);
+player.color = "#000000";
+player.isPlayer = true;
+player.isRect = true;
+physicalObjects.push(player);
