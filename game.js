@@ -41,6 +41,9 @@ let win = window,
     width = win.innerWidth || e.clientWidth || g.clientWidth,
     height = win.innerHeight || e.clientHeight || g.clientHeight;
 
+width *= 0.90;
+height *= 0.90;
+
 var physicalObjects = [];
 var shots = [];
 
@@ -354,7 +357,7 @@ let rand = MAX_OBJECTS;
 
 for(let i = 0 ; i < rand ; i++) {
     let temp = new PhysicalObject(width/2, height-20, 20, 20);
-    temp.addXVel(random(-1, 1)).addYVel(random(-1.5, -1));
+    temp.addXVel(random(-1, 1)).addYVel(random(-1.49, -1));
     physicalObjects.push(temp);
 }
 
