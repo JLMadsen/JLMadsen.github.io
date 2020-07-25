@@ -13,6 +13,8 @@
  * 
  */
 
+import {random, randomHex, abs, angle, rad} from './functions/math'
+
 // CONSTS
 
 const MAX_VELOCITY = 1.5;
@@ -167,11 +169,11 @@ let PhysicalObject = function(x, y, w, h) {
         if(this.isPlayer) {
             screenLoop(this);
         } else {
-            if(this.x < 0 || this.x > width) {
+            if(this.x-this.width/2 < 0 || this.x+this.width/2 > width) {
                 this.xVel = 0;
             }
 
-            if(this.y < 0 || this.y > height) {
+            if(this.y-this.height/2 < 0 || this.y+this.height/2 > height) {
                 this.yVel = 0;
             }
         }
@@ -285,12 +287,6 @@ function fillCircle(obj) {
     ctx.stroke();
 }
 
-function random(min, max) {return Math.random() * (max - min) + min;}
-function randomHex()      {return '#'+Math.floor(random(0, 16777215)).toString(16);}
-function angle(vec)       {return Math.atan2(vec[1], vec[0]);}
-function rad(angle)       {return angle * Math.PI / 180;}
-function abs(a)           {return Math.abs(a)}
-
 function normalizeVec(pos1, pos2) {
     let dist      = [pos1[0] - pos2[0], pos1[1] - pos2[1]];
     let norm      = Math.sqrt( Math.pow(dist[0], 2) + Math.pow(dist[1], 2));
@@ -346,11 +342,17 @@ function mouseMove(e) {
     }
 }
 
+function scroll() {
+    shoot();
+}
+
 canvas.addEventListener('mousedown', mouseClick);
 canvas.addEventListener('mouseup', () => {hold = false;});
 canvas.addEventListener('mousemove', mouseMove);
 canvas.addEventListener('keydown', onKeyDown);
 canvas.addEventListener('keyup', onKeyUp);
+document.addEventListener('wheel', scroll);
+
 
 function onKeyDown(event) {
     var keyCode = event.keyCode;
