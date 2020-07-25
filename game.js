@@ -26,6 +26,7 @@ const PLAYER_SVG = new Path2D
 // VARS
 
 let frame = 0;
+let fps = 0;
 let kw = false, 
     ka = false, 
     ks = false, 
@@ -63,6 +64,14 @@ let ctx = canvas.getContext("2d");
 
 // Define object
 
+function delObj(arr, el) {
+    arr.splice(arr.indexOf(el), 1);
+}
+
+function delInd(arr, ind) {
+    arr.splice(ind, 1);
+}
+
 let Shot = function(start, stop) {
     this.x = start[0];
     this.y = start[1];
@@ -86,22 +95,20 @@ let Shot = function(start, stop) {
             this.y += this.yVel;
         }
 
-
-
         drawTail(this, 5);
 
-        physicalObjects.forEach(obj => {
+        physicalObjects.forEach((obj, index) => {
             if(!(obj.isPlayer || !obj.isShootable)) {
                 if(obj.isRect) {
                     if(isIntersectingRect(this, obj)) {
                         score++;
-                        physicalObjects.splice(physicalObjects.indexOf(obj),1);
+                        delInd(physicalObjects, index)
                     }
                 }
                 else {
                     if(isIntersectingCirc(this, obj)) {
                         score++;
-                        physicalObjects.splice(physicalObjects.indexOf(obj),1);
+                        delInd(physicalObjects, index)
                     }
                 }
             } else if (!obj.isShootable) {
@@ -176,6 +183,7 @@ let PhysicalObject = function(x, y, w, h) {
 function frameRender() {
     ctx.clearRect(0, 0, width, height);
 
+
     let grd = ctx.createLinearGradient(width/2, 0, width/2, height);
     grd.addColorStop(0, 'SteelBlue');
     grd.addColorStop(1, 'LightSkyBlue');
@@ -186,18 +194,21 @@ function frameRender() {
     ctx.fillStyle = '#000000';
     ctx.font = "30px Arial";
     ctx.fillText("Score: " + score.toString(), 10, 50);
-    ctx.fillText("Remaining: " + (MAX_OBJECTS-score+1).toString(), 10, 90);
+    ctx.fillText("Remaining: " + (MAX_OBJECTS-score).toString(), 10, 90);
+    ctx.fillText("FPS: " + fps.toString(), width-150, 50 );
 
     physicalObjects.forEach(obj => {
 
         ctx.fillStyle = obj.color;
+        ctx.save();
 
-        if (obj.isPlayer && false) { // skip emojies, replace with svg maybe
+        if (obj.isPlayer) { // skip emojies, replace with svg maybe
 
-            ctx.font = "10px";
-            ctx.fillText('🏹', obj.x, obj.y);
-
-        } else if (obj.isRect) {
+            ctx.translate(obj.x+obj.width/2, obj.y+obj.height/2)
+            ctx.rotate(rad(angle(normalizeVec([obj.x, obj.y], [mouseX, mouseY]))));
+            ctx.translate(-obj.x-obj.width/2, -obj.y-obj.height/2)
+        }
+        if (obj.isRect) {
 
             ctx.fillRect(
                 obj.x,
@@ -210,6 +221,7 @@ function frameRender() {
             fillCircle(obj);
         }
 
+        ctx.restore();
         obj.nextFrame();
 
     });
@@ -231,39 +243,24 @@ function frameRender() {
 }
 
 function frameRenderLoop() {
-
     frame++;
     requestAnimationFrame(frameRenderLoop);
     frameRender();
 }
 
-
-
-function screenLoop(obj) 
-{    
-    // Drifted off of right edge 
-    if (obj.x - (obj.width / 2) > canvas.width)
-        obj.x = -obj.width / 2;
-    
-    // Drifted off of left edge
-    if (obj.x + (obj.width / 2) < 0)
-        obj.x = canvas.width + obj.width / 2;
-    
-    // Drifted off of bottom edge 
-    if (obj.y - (obj.height / 2) > canvas.height)
-        obj.y = -obj.height / 2;
-    
-    // Drifted off of top edge
-    if (obj.y + (obj.height / 2) < 0)
-        obj.y = canvas.height + obj.height / 2;
+function ffps() {
+    let prev = frame;
+    setTimeout(() => {
+        fps = frame - prev;
+        ffps();
+    }, 1000)
 }
 
-function random(min, max) {
-    return Math.random() * (max - min) + min;
-}
-
-function randomHex() {
-    return '#'+Math.floor(random(0, 16777215)).toString(16);
+function screenLoop(obj) {
+    if (obj.x - (obj.width / 2)  > canvas.width)  obj.x = -obj.width / 2;
+    if (obj.x + (obj.width / 2)  < 0)             obj.x = canvas.width + obj.width / 2;
+    if (obj.y - (obj.height / 2) > canvas.height) obj.y = -obj.height / 2;
+    if (obj.y + (obj.height / 2) < 0)             obj.y = canvas.height + obj.height / 2;
 }
 
 function getCursorPosition(event) {
@@ -274,7 +271,6 @@ function getCursorPosition(event) {
 }
 
 function drawTail(obj, length) {
-
     ctx.beginPath();
     ctx.fillStyle = '#000000';
     ctx.moveTo(obj.x, obj.y);
@@ -289,9 +285,11 @@ function fillCircle(obj) {
     ctx.stroke();
 }
 
-function angle(vec) {return Math.atan2(vec[1], vec[0]);}
-function rad(angle) {return angle * Math.PI / 180;}
-function abs(a)     {return Math.abs(a)}
+function random(min, max) {return Math.random() * (max - min) + min;}
+function randomHex()      {return '#'+Math.floor(random(0, 16777215)).toString(16);}
+function angle(vec)       {return Math.atan2(vec[1], vec[0]);}
+function rad(angle)       {return angle * Math.PI / 180;}
+function abs(a)           {return Math.abs(a)}
 
 function normalizeVec(pos1, pos2) {
     let dist      = [pos1[0] - pos2[0], pos1[1] - pos2[1]];
@@ -342,15 +340,15 @@ function movePlayer() {
 }
 
 function mouseMove(e) {
-    if(frame > mouseFrame) {
+    if(frame > mouseFrame && frame & 1) {
         setMousePos(e);
         mouseFrame = frame;
     }
 }
 
 canvas.addEventListener('mousedown', mouseClick);
-canvas.addEventListener('mouseup', () => {hold = false;})
-canvas.addEventListener('mousemove', mouseMove) // bad for performance, dont need to set every change
+canvas.addEventListener('mouseup', () => {hold = false;});
+canvas.addEventListener('mousemove', mouseMove);
 canvas.addEventListener('keydown', onKeyDown);
 canvas.addEventListener('keyup', onKeyUp);
 
@@ -393,6 +391,7 @@ function onKeyUp(event) {
 
 // Start
 frameRenderLoop();
+ffps();
 
 for(let i = 0 ; i < MAX_OBJECTS ; i++) {
     let temp = new PhysicalObject(width/2, height-30, 20, 20);
