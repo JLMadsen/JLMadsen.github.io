@@ -1,25 +1,18 @@
 /**
- * 
  *  Intro
  * 
  *  Game made in pure javascript and HTML
  * 
  *  Game ideas:
- *      * Bow and arrow thing
- * 
- *  Guides:
- *      * https://developer.ibm.com/tutorials/wa-build2dphysicsengine/
- *      * https://www.graphitedigital.com/blog/build-your-own-basic-physics-engine-in-javascript
- * 
+ *      * Bow and arrow thing 
+ *      * PHYSICS
  */
-
-import {random, randomHex, abs, angle, rad} from './functions/math.js'
 
 // CONSTS
 
 const MAX_VELOCITY = 1.5;
 const MAX_OBJECTS = 500;
-const MOVEMENT_SPEED = 1.5;
+const MOVEMENT_SPEED = 4;
 const SHOT_TTL = 750;
 const SHOT_VEL = 4;
 const GRAV = 9.81;
@@ -40,6 +33,10 @@ let mouseFrame = 0;
 let mouseX  = 0,
     mouseY = 0;
 
+let physicalObjects = [];
+let shots = [];
+let player;
+
 // Init
 
 let win = window,
@@ -52,9 +49,6 @@ let win = window,
 width *= 0.85;
 height *= 0.85;
 
-var physicalObjects = [];
-var shots = [];
-
 let canvas = d.getElementById('canvas');
     canvas.width = width;
     canvas.height = height;
@@ -66,28 +60,17 @@ let ctx = canvas.getContext("2d");
 
 // Define object
 
-function delObj(arr, el) {
-    arr.splice(arr.indexOf(el), 1);
-}
 
-function delInd(arr, ind) {
-    arr.splice(ind, 1);
-}
+
+
 
 let Shot = function(start, stop) {
-    this.x = start[0];
-    this.y = start[1];
-
-    this.width = 5;
-    this.height = 5;
-
+    this.x = start[0]; this.y = start[1];
     let vec = normalizeVec(start, stop)
-
-    this.isStuck = false;
-
     this.xVel = SHOT_VEL*vec[0];
     this.yVel = SHOT_VEL*vec[1];
-
+    this.width = 5; this.height = 5;
+    this.isStuck = false;
     this.ttl = SHOT_TTL;
 
     this.nextFrame = function() {
@@ -96,25 +79,28 @@ let Shot = function(start, stop) {
             this.x += this.xVel;
             this.y += this.yVel;
         }
-
         drawTail(this, 5);
 
         physicalObjects.forEach((obj, index) => {
-            if(!(obj.isPlayer || !obj.isShootable)) {
+            if(obj.isShootable) {
                 if(obj.isRect) {
                     if(isIntersectingRect(this, obj)) {
+                        obj.hit();
                         score++;
                         delInd(physicalObjects, index)
                     }
                 }
                 else {
                     if(isIntersectingCirc(this, obj)) {
+                        obj.hit();
                         score++;
                         delInd(physicalObjects, index)
                     }
                 }
-            } else if (!obj.isShootable) {
+            } else {
                 if(isIntersectingRect(this, obj)) {
+                    obj.hit();
+                    obj.attached.push(this);
                     this.isStuck = true;
                 }
             }
@@ -123,48 +109,62 @@ let Shot = function(start, stop) {
 }
 
 let PhysicalObject = function(x, y, w, h) {
-    this.isPlayer = false;
+    this.id = "";
     this.isShootable = true;
     this.isRect = false;
+    this.isPlayer = false;
+    this.isBalloon = false;
+    this.isGhost = false;
+    this.isFree = true;
+    this.hit = function() {};
 
-    this.x = x;
-    this.y = y;
+    this.hasGravity = false;
 
-    this.width = w;
-    this.height = h;
+    this.x = x;      this.y = y;
+    this.xVel = 0.0; this.yVel = 0.0;
+    this.width = w;  this.height = h;
 
-    this.xVel = 0.0;
-    this.yVel = 0.0;
-
+    this.attached = [];
     this.color = randomHex();
 
     this.addXVel = function(vel) {
-
-        if (!(abs(this.xVel + vel) > MAX_VELOCITY)) {
-            this.xVel += vel;
-        }
-
-        return this;
-    }
+        if (!(abs(this.xVel + vel) > MAX_VELOCITY)) { this.xVel += vel; }
+        return this; }
 
     this.addYVel = function(vel) {
-
-        if (!(abs(this.yVel + vel) > MAX_VELOCITY)) {
-            this.yVel += vel;
-        }
-
-        return this;
-    } 
+        if (!(abs(this.yVel + vel) > MAX_VELOCITY)) { this.yVel += vel; }
+        return this; } 
 
     this.nextFrame = function() {
         if(this.isPlayer) {
             movePlayer();
-        } else {
+        }
+        if(this.isBalloon) {
             drawTail(this, 20);
         }
+        if(this.hasGravity) {
+            this.yVel += GRAV / 1000;
+        }       
 
-        this.x += this.xVel;
-        this.y += this.yVel;
+        if(!this.isGhost) {
+            physicalObjects.forEach(obj => {
+                if(!obj.isGhost && this.id !== obj.id) {
+                    if(obj.isRect) {
+                        if(isIntersectingRect(this, obj)) {
+                            //console.log('hit', this.id, obj.id);
+                            this.xVel = 0;
+                            this.yVel = 0;
+                        }
+                    }
+                    else {
+                        if(isIntersectingCirc(this, obj)) {
+                            this.xVel = 0;
+                            this.yVel = 0;
+                        }
+                    }
+                }
+            })
+        }
 
         if(this.isPlayer) {
             screenLoop(this);
@@ -177,6 +177,14 @@ let PhysicalObject = function(x, y, w, h) {
                 this.yVel = 0;
             }
         }
+
+        this.x += this.xVel;
+        this.y += this.yVel;
+
+        this.attached.forEach(obj => {
+            obj.x += this.xVel;
+            obj.y += this.yVel;
+        })
     }
 }
 
@@ -186,9 +194,9 @@ function frameRender() {
     ctx.clearRect(0, 0, width, height);
 
 
-    let grd = ctx.createLinearGradient(width/2, 0, width/2, height);
-    grd.addColorStop(0, 'SteelBlue');
-    grd.addColorStop(1, 'LightSkyBlue');
+    let grd = ctx.createLinearGradient(width/2, 0, width/2, height-50);
+    grd.addColorStop(0, '#65DDEF');
+    grd.addColorStop(1, '#C9F6FF');
 
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, width, height);
@@ -202,14 +210,7 @@ function frameRender() {
     physicalObjects.forEach(obj => {
 
         ctx.fillStyle = obj.color;
-        ctx.save();
 
-        if (obj.isPlayer) { // skip emojies, replace with svg maybe
-
-            ctx.translate(obj.x+obj.width/2, obj.y+obj.height/2)
-            ctx.rotate(rad(angle(normalizeVec([obj.x, obj.y], [mouseX, mouseY]))));
-            ctx.translate(-obj.x-obj.width/2, -obj.y-obj.height/2)
-        }
         if (obj.isRect) {
 
             ctx.fillRect(
@@ -223,15 +224,15 @@ function frameRender() {
             fillCircle(obj);
         }
 
-        ctx.restore();
+
         obj.nextFrame();
 
     });
 
-    shots.forEach(obj => {
+    shots.forEach((obj, index) => {
 
         if(obj.ttl === 0) {
-            shots.splice(shots.indexOf(obj), 1);
+            delInd(shots, index);
         } else {
 
             ctx.fillStyle = "brown";
@@ -242,6 +243,21 @@ function frameRender() {
             obj.nextFrame();
         }
     })
+
+    // draw player
+
+    ctx.save();
+    ctx.translate(player.x+player.width/2, player.y+player.height/2);
+    ctx.rotate(rad(angle(normalizeVec([player.x, player.y], [mouseX, mouseY]))));
+    ctx.translate(-player.x-player.width/2, -player.y-player.height/2);
+    ctx.fillRect(
+        player.x,
+        player.y,
+        player.width,
+        player.height
+    );
+    ctx.restore();
+    player.nextFrame();
 }
 
 function frameRenderLoop() {
@@ -286,6 +302,15 @@ function fillCircle(obj) {
     ctx.fill();
     ctx.stroke();
 }
+
+function random(min, max) {return Math.random() * (max - min) + min;}
+function randomHex()      {return '#'+Math.floor(random(100, 16777215)).toString(16);}
+function angle(vec)       {return Math.atan2(vec[1], vec[0]);}
+function rad(angle)       {return angle * Math.PI / 180;}
+function abs(a)           {return Math.abs(a)}
+function delObj(arr, el)  {arr.splice(arr.indexOf(el), 1);}
+function delInd(arr, ind) {arr.splice(ind, 1);}
+function stopObj(obj)     {obj.xVel = 0; obj.yVel = 0;}
 
 function normalizeVec(pos1, pos2) {
     let dist      = [pos1[0] - pos2[0], pos1[1] - pos2[1]];
@@ -391,32 +416,60 @@ function onKeyUp(event) {
 
 
 
-// Start
-frameRenderLoop();
-ffps();
+
 
 for(let i = 0 ; i < MAX_OBJECTS ; i++) {
-    let temp = new PhysicalObject(width/2, height-30, 20, 20);
+    let temp = new PhysicalObject(width/2, height-40, 20, 20);
     temp.addXVel(random(-1, 1)).addYVel(random(-1.49, -1));
+    temp.isBalloon = true;
+    temp.isGhost = true;
+    temp.id = "ballon" + i;
     physicalObjects.push(temp);
 }
 
-let ground = new PhysicalObject(0, (height-50), width, 50)
-ground.isRect = true;
+let box1 = new PhysicalObject(width/4, height/2, 60, 60);
+box1.isRect = true;
+box1.isShootable = false;
+box1.hasGravity = true;
+box1.isGhost = false;
+box1.id = "box1";
+physicalObjects.push(box1);
 
+let box2 = new PhysicalObject((width/4)+width/2, height/2, 60, 60);
+box2.isRect = true;
+box2.isShootable = false;
+box2.isGhost = false;
+box1.id = "box2";
+box2.hit = function() {
+    box2.hasGravity = true;
+}
+physicalObjects.push(box2);
+
+let box3 = new PhysicalObject(width/4 + 20, height/4, 60, 60);
+box3.isRect = true;
+box3.isShootable = false;
+box3.hasGravity = true;
+box3.isGhost = false;
+box3.id = "box3";
+physicalObjects.push(box3);
+
+let ground = new PhysicalObject(0, (height-50), width, 50);
 let grndgrad = ctx.createLinearGradient(0, ground.y, 0, height);
 grndgrad.addColorStop(0.4, 'DarkGreen');
-grndgrad.addColorStop(1, 'Tan')
-
+grndgrad.addColorStop(1, 'Tan');
 ground.color = grndgrad;
 ground.isShootable = false;
+ground.isRect = true;
+ground.isGhost = false;
+ground.id = "ground";
+physicalObjects.push(ground);
 
-physicalObjects.push(
-    ground
-)
-
-let player = new PhysicalObject(100, 100, 10, 10);
+player = new PhysicalObject(100, 100, 10, 10);
 player.color = "#000000";
 player.isPlayer = true;
 player.isRect = true;
-physicalObjects.push(player);
+player.id = "player";
+
+// Start
+frameRenderLoop();
+ffps();
