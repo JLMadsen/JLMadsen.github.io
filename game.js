@@ -13,7 +13,7 @@
  * 
  */
 
-import {random, randomHex, abs, angle, rad} from './functions/math'
+import {random, randomHex, abs, angle, rad} from './functions/math.js'
 
 // CONSTS
 
