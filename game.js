@@ -13,7 +13,7 @@
 const MAX_VELOCITY = 1.5;
 const MAX_OBJECTS = 500;
 const MOVEMENT_SPEED = 4;
-const SHOT_TTL = 750;
+const SHOT_TTL = 1500;
 const SHOT_VEL = 4;
 const GRAV = 9.81;
 const PLAYER_SVG = new Path2D
@@ -59,10 +59,6 @@ d.body.appendChild(canvas);
 let ctx = canvas.getContext("2d");
 
 // Define object
-
-
-
-
 
 let Shot = function(start, stop) {
     this.x = start[0]; this.y = start[1];
@@ -193,7 +189,6 @@ let PhysicalObject = function(x, y, w, h) {
 function frameRender() {
     ctx.clearRect(0, 0, width, height);
 
-
     let grd = ctx.createLinearGradient(width/2, 0, width/2, height-50);
     grd.addColorStop(0, '#65DDEF');
     grd.addColorStop(1, '#C9F6FF');
@@ -248,14 +243,16 @@ function frameRender() {
 
     ctx.save();
     ctx.translate(player.x+player.width/2, player.y+player.height/2);
-    ctx.rotate(rad(angle(normalizeVec([player.x, player.y], [mouseX, mouseY]))));
+    ctx.rotate(rad(normalizeVec([player.x, player.y], [mouseX, mouseY])));
     ctx.translate(-player.x-player.width/2, -player.y-player.height/2);
-    ctx.fillRect(
+    
+    ctx.fillText('👽', player.x, player.y)
+    /*ctx.fillRect(
         player.x,
         player.y,
         player.width,
         player.height
-    );
+    );*/
     ctx.restore();
     player.nextFrame();
 }
@@ -305,8 +302,8 @@ function fillCircle(obj) {
 
 function random(min, max) {return Math.random() * (max - min) + min;}
 function randomHex()      {return '#'+Math.floor(random(100, 16777215)).toString(16);}
-function angle(vec)       {return Math.atan2(vec[1], vec[0]);}
-function rad(angle)       {return angle * Math.PI / 180;}
+function rad(vec)         {return Math.atan2(vec[1], vec[0]);}
+function angle(rad)       {return rad * 180 / Math.PI;}
 function abs(a)           {return Math.abs(a)}
 function delObj(arr, el)  {arr.splice(arr.indexOf(el), 1);}
 function delInd(arr, ind) {arr.splice(ind, 1);}
@@ -431,14 +428,12 @@ let box1 = new PhysicalObject(width/4, height/2, 60, 60);
 box1.isRect = true;
 box1.isShootable = false;
 box1.hasGravity = true;
-box1.isGhost = false;
 box1.id = "box1";
 physicalObjects.push(box1);
 
 let box2 = new PhysicalObject((width/4)+width/2, height/2, 60, 60);
 box2.isRect = true;
 box2.isShootable = false;
-box2.isGhost = false;
 box1.id = "box2";
 box2.hit = function() {
     box2.hasGravity = true;
@@ -449,7 +444,6 @@ let box3 = new PhysicalObject(width/4 + 20, height/4, 60, 60);
 box3.isRect = true;
 box3.isShootable = false;
 box3.hasGravity = true;
-box3.isGhost = false;
 box3.id = "box3";
 physicalObjects.push(box3);
 
@@ -460,11 +454,10 @@ grndgrad.addColorStop(1, 'Tan');
 ground.color = grndgrad;
 ground.isShootable = false;
 ground.isRect = true;
-ground.isGhost = false;
 ground.id = "ground";
 physicalObjects.push(ground);
 
-player = new PhysicalObject(100, 100, 10, 10);
+player = new PhysicalObject(100, 100, 20, 20);
 player.color = "#000000";
 player.isPlayer = true;
 player.isRect = true;
