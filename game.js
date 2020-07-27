@@ -243,7 +243,13 @@ function frameRender() {
 
     ctx.save();
     ctx.translate(player.x+player.width/2, player.y+player.height/2);
-    ctx.rotate(rad(normalizeVec([player.x, player.y], [mouseX, mouseY])));
+
+    let rr = rad(normalizeVec([player.x, player.y], [mouseX, mouseY]));
+    console.log(rr);
+    let mm = -abs(rr) + 3 ;
+    console.log(mm);
+    
+    ctx.rotate(rr);
     ctx.translate(-player.x-player.width/2, -player.y-player.height/2);
     
     ctx.fillText('👽', player.x, player.y)
@@ -304,7 +310,7 @@ function random(min, max) {return Math.random() * (max - min) + min;}
 function randomHex()      {return '#'+Math.floor(random(100, 16777215)).toString(16);}
 function rad(vec)         {return Math.atan2(vec[1], vec[0]);}
 function angle(rad)       {return rad * 180 / Math.PI;}
-function abs(a)           {return Math.abs(a)}
+function abs(a)           {return Math.abs(a);}
 function delObj(arr, el)  {arr.splice(arr.indexOf(el), 1);}
 function delInd(arr, ind) {arr.splice(ind, 1);}
 function stopObj(obj)     {obj.xVel = 0; obj.yVel = 0;}
