@@ -6,6 +6,11 @@
  *  Game ideas:
  *      * Bow and arrow thing 
  *      * PHYSICS
+ * 
+ *  TODO:
+ *      * ray tracing        checking if player can see balloon, for AI?
+ *      * rotating boxes     if it falls on side of other box, check intersecting rotated boxes? work with polygons instead of whole rectangles
+ *      * collision          transfer velocity, things need mass
  */
 
 // CONSTS
