@@ -41,6 +41,14 @@ let mouseX  = 0,
 let physicalObjects = [];
 let shots = [];
 let player;
+let idCounter = 0;
+
+const inv = {
+    BOW: "bow",
+    BLOCK: "block"
+}
+
+let currInv = inv.BOW;
 
 // Init
 
@@ -73,17 +81,21 @@ let Shot = function(start, stop) {
     this.width = 5; this.height = 5;
     this.isStuck = false;
     this.ttl = SHOT_TTL;
+    this.attachedTo = null;
 
     this.nextFrame = function() {
         if(!this.isStuck) {
             this.yVel += GRAV / 250;
             this.x += this.xVel;
             this.y += this.yVel;
+        } else {
+            this.x += this.attachedTo.xVel;
+            this.y += this.attachedTo.yVel;
         }
         drawTail(this, 5);
 
         physicalObjects.forEach((obj, index) => {
-            if(obj.isShootable) {
+            if(obj.isShootable && !this.isStuck) {
                 if(obj.isRect) {
                     if(isIntersectingRect(this, obj)) {
                         obj.hit();
@@ -101,8 +113,8 @@ let Shot = function(start, stop) {
             } else {
                 if(isIntersectingRect(this, obj)) {
                     obj.hit();
-                    obj.attached.push(this);
                     this.isStuck = true;
+                    this.attachedTo = obj;
                 }
             }
         })
@@ -110,7 +122,7 @@ let Shot = function(start, stop) {
 }
 
 let PhysicalObject = function(x, y, w, h) {
-    this.id = "";
+    this.id = (idCounter++).toString();
     this.isShootable = true;
     this.isRect = false;
     this.isPlayer = false;
@@ -152,7 +164,6 @@ let PhysicalObject = function(x, y, w, h) {
                 if(!obj.isGhost && this.id !== obj.id) {
                     if(obj.isRect) {
                         if(isIntersectingRect(this, obj)) {
-                            //console.log('hit', this.id, obj.id);
                             this.xVel = 0;
                             this.yVel = 0;
                         }
@@ -163,6 +174,7 @@ let PhysicalObject = function(x, y, w, h) {
                             this.yVel = 0;
                         }
                     }
+
                 }
             })
         }
@@ -181,11 +193,6 @@ let PhysicalObject = function(x, y, w, h) {
 
         this.x += this.xVel;
         this.y += this.yVel;
-
-        this.attached.forEach(obj => {
-            obj.x += this.xVel;
-            obj.y += this.yVel;
-        })
     }
 }
 
@@ -201,11 +208,7 @@ function frameRender() {
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, width, height);
 
-    ctx.fillStyle = '#000000';
-    ctx.font = "30px Arial";
-    ctx.fillText("Score: " + score.toString(), 10, 50);
-    ctx.fillText("Remaining: " + (MAX_OBJECTS-score).toString(), 10, 90);
-    ctx.fillText("FPS: " + fps.toString(), width-150, 50 );
+
 
     physicalObjects.forEach(obj => {
 
@@ -250,10 +253,6 @@ function frameRender() {
     ctx.translate(player.x+player.width/2, player.y+player.height/2);
 
     let rr = rad(normalizeVec([player.x, player.y], [mouseX, mouseY]));
-    console.log(rr);
-    let mm = -abs(rr) + 3 ;
-    console.log(mm);
-    
     ctx.rotate(rr);
     ctx.translate(-player.x-player.width/2, -player.y-player.height/2);
     
@@ -266,6 +265,29 @@ function frameRender() {
     );*/
     ctx.restore();
     player.nextFrame();
+
+    // ui text
+    ctx.fillStyle = '#000000';
+    ctx.font = "30px Arial";
+    ctx.fillText("Score: " + score.toString(), 10, 50);
+    ctx.fillText("Remaining: " + (MAX_OBJECTS-score).toString(), 10, 90);
+    ctx.fillText("FPS: " + fps.toString(), width-150, 50 );
+
+    // inventory
+   
+    Object.keys(inv).forEach((item, index) => {        
+        if(item.toLowerCase() === currInv) {           
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(5+40*index, height-42, 40, 40)
+        }
+        ctx.fillStyle = "#dddddd";
+        ctx.fillRect(5+45*index, height-40, 35, 35)
+        
+        switch(item) {
+            case inv.BOW: fillText('🏹', 10+30*index, height-40); break;
+            case inv.BLOCK: fillText('🟧', 10+30*index, height-40); break;
+        }
+    })
 }
 
 function frameRenderLoop() {
@@ -329,10 +351,10 @@ function normalizeVec(pos1, pos2) {
 }
 
 function isIntersectingRect(obj1, obj2) {
-    return !((obj1.x)             > (obj2.x+obj2.width)  ||
-             (obj1.x+obj1.width)  < (obj2.x)             ||
-             (obj1.y)             > (obj2.y+obj2.height) ||
-             (obj1.y+obj1.height) < (obj2.y))
+    return !((obj1.x+obj1.xVel)             > (obj2.x+obj2.width+obj2.xVel)  ||
+             (obj1.x+obj1.width+obj1.xVel)  < (obj2.x+obj2.xVel)             ||
+             (obj1.y+obj1.yVel)             > (obj2.y+obj2.height+obj2.yVel) ||
+             (obj1.y+obj1.height+obj1.yVel) < (obj2.y+obj2.yVel))
 }
 
 function isIntersectingCirc(obj1, obj2) {
@@ -342,10 +364,27 @@ function isIntersectingCirc(obj1, obj2) {
     return dist < obj1.width/2 + obj2.width/2;
 }
 
+function isIntersectingPoly(obj1, obj2) {
+
+}
+
 function mouseClick(e) {
     hold = true;
     setMousePos(e);
-    shoot();
+    
+    switch(currInv) {
+        case inv.BOW:   shoot();    break;
+        case inv.BLOCK: addBlock(); break;
+    }
+}
+
+function addBlock() {
+    let block = new PhysicalObject(mouseX-20, mouseY-20, 40, 40);
+    block.hasGravity = true;
+    block.isRect = true;
+    block.isShootable = false;
+    block.id = 
+    physicalObjects.push(block);
 }
 
 function shoot() {
@@ -387,13 +426,15 @@ canvas.addEventListener('keyup', onKeyUp);
 document.addEventListener('wheel', scroll);
 
 
-function onKeyDown(event) {
+function onKeyDown(event) {  
     var keyCode = event.keyCode;
     switch (keyCode) {
         case 68: kd = true; break;
         case 83: ks = true; break;
         case 65: ka = true; break;
         case 87: kw = true; break;
+        case 49: currInv = inv.BOW;   break;
+        case 50: currInv = inv.BLOCK; break;
     }
 }
 
@@ -439,13 +480,11 @@ let box1 = new PhysicalObject(width/4, height/2, 60, 60);
 box1.isRect = true;
 box1.isShootable = false;
 box1.hasGravity = true;
-box1.id = "box1";
 physicalObjects.push(box1);
 
 let box2 = new PhysicalObject((width/4)+width/2, height/2, 60, 60);
 box2.isRect = true;
 box2.isShootable = false;
-box1.id = "box2";
 box2.hit = function() {
     box2.hasGravity = true;
 }
@@ -455,7 +494,6 @@ let box3 = new PhysicalObject(width/4 + 20, height/4, 60, 60);
 box3.isRect = true;
 box3.isShootable = false;
 box3.hasGravity = true;
-box3.id = "box3";
 physicalObjects.push(box3);
 
 let ground = new PhysicalObject(0, (height-50), width, 50);
