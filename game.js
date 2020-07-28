@@ -253,7 +253,7 @@ function frameRender() {
     ctx.translate(player.x+player.width/2, player.y+player.height/2);
 
     let rr = rad(normalizeVec([player.x, player.y], [mouseX, mouseY]));
-    ctx.rotate(rr);
+    ctx.rotate(abs(rr)-1.5);
     ctx.translate(-player.x-player.width/2, -player.y-player.height/2);
     
     ctx.fillText('👽', player.x, player.y)
