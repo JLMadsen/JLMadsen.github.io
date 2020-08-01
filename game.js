@@ -13,6 +13,16 @@
  *      * collision          transfer velocity, things need mass
  */
 
+// prototypes
+
+Array.prototype.x = function() {
+    return this[0];
+}
+
+Array.prototype.y = function() {
+    return this[1];
+}
+
 // CONSTS
 
 const MAX_VELOCITY = 1.5;
@@ -40,6 +50,8 @@ let mouseX  = 0,
 
 let physicalObjects = [];
 let shots = [];
+let polygons = [];
+
 let player;
 let idCounter = 0;
 
@@ -121,8 +133,46 @@ let Shot = function(start, stop) {
     }
 }
 
+let Polygon = function(x, y, points) {  
+    this.id = uuid();
+    this.points = points;
+    this.x = x; this.y = y;
+    this.xVel = 0.0; this.yVel = 0.0;
+    this.angle = 0.0;
+    this.color = randomHex();
+
+    this.onCollision = function() {}
+    this.onShot = function() {}
+    this.onDelete = function() {delObj(polygons, this);}
+
+    this.nextFrame = function() {
+        
+        polygons.forEach(obj => {
+            if (obj.id !== this.id) {
+                if (frame & 1) console.log( isIntersectingPoly(this, obj));
+            }
+        })
+
+        this.draw();
+    }
+
+    this.draw = function() {
+        let start = points[0];
+        ctx.moveTo(this.x + start[0], this.y + start[1]);
+        ctx.beginPath();
+        this.points.forEach((p, i) => {
+            ctx.lineTo(this.x + p[0], this.y + p[1])
+        })
+        let end = points[points.length -1];
+        ctx.lineTo(this.x + end[0], this.y + end[1])
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.stroke();
+    }
+}
+
 let PhysicalObject = function(x, y, w, h) {
-    this.id = (idCounter++).toString();
+    this.id = uuid();
     this.isShootable = true;
     this.isRect = false;
     this.isPlayer = false;
@@ -232,6 +282,10 @@ function frameRender() {
 
     });
 
+    polygons.forEach(pol => {
+        pol.nextFrame();
+    })
+
     shots.forEach((obj, index) => {
 
         if(obj.ttl === 0) {
@@ -332,15 +386,18 @@ function fillCircle(obj) {
     ctx.fill();
     ctx.stroke();
 }
-
-function random(min, max) {return Math.random() * (max - min) + min;}
 function randomHex()      {return '#'+Math.floor(random(100, 16777215)).toString(16);}
+function squareVecs(m)    {return [[-1*m, -1*m],[1*m, -1*m],[1*m, 1*m],[-1*m, 1*m]]}
+function random(min, max) {return Math.random() * (max - min) + min;}
 function rad(vec)         {return Math.atan2(vec[1], vec[0]);}
+function uuid()           {return (idCounter++).toString();}
+function delObj(arr, el)  {arr.splice(arr.indexOf(el), 1);}
+function stopObj(obj)     {obj.xVel = 0; obj.yVel = 0;}
 function angle(rad)       {return rad * 180 / Math.PI;}
 function abs(a)           {return Math.abs(a);}
-function delObj(arr, el)  {arr.splice(arr.indexOf(el), 1);}
 function delInd(arr, ind) {arr.splice(ind, 1);}
-function stopObj(obj)     {obj.xVel = 0; obj.yVel = 0;}
+function max(val1, val2)  {if(val1>val2)return val1; return val2;}
+function min(val1, val2)  {if(val1>val2)return val2; return val1;}
 
 function normalizeVec(pos1, pos2) {
     let dist      = [pos1[0] - pos2[0], pos1[1] - pos2[1]];
@@ -351,6 +408,13 @@ function normalizeVec(pos1, pos2) {
 }
 
 function isIntersectingRect(obj1, obj2) {
+    return !((obj1.x)             > (obj2.x+obj2.width)  ||
+             (obj1.x+obj1.width)  < (obj2.x)             ||
+             (obj1.y)             > (obj2.y+obj2.height) ||
+             (obj1.y+obj1.height) < (obj2.y))
+}
+
+function isIntersectingRect2(obj1, obj2) {
     return !((obj1.x+obj1.xVel)             > (obj2.x+obj2.width+obj2.xVel)  ||
              (obj1.x+obj1.width+obj1.xVel)  < (obj2.x+obj2.xVel)             ||
              (obj1.y+obj1.yVel)             > (obj2.y+obj2.height+obj2.yVel) ||
@@ -366,6 +430,52 @@ function isIntersectingCirc(obj1, obj2) {
 
 function isIntersectingPoly(obj1, obj2) {
 
+    for (let i=0; i<obj1.points.length; i++) {
+        let a1 = obj1.points[i];
+        let a2 = obj1.points[(i+1) % obj1.points.length];
+
+        for (let j=0; j<obj2.points.length; j++) {
+            let b1 = obj2.points[j];
+            let b2 = obj2.points[(j+1) % obj2.points.length];
+    
+            if (doIntersection(a1, a2, b1, b2)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function onSegment(p, q, r) {
+    return ( (p.x() <= max(p.x(), r.x())) &&
+             (p.x() >= min(p.x(), r.x())) &&
+             (p.y() <= max(p.y(), r.y())) &&
+             (p.y() >= min(p.y(), r.y())) );
+}
+
+function orientation(p, q, r) {
+    let val = (q.y() - p.y()) * 
+              (r.x() - q.x()) - 
+              (q.x() - p.x()) * 
+              (r.y() - q.y());
+
+           if (val > 0) { return 1;
+    } else if (val < 0) { return 2;
+    } else {              return 0; }
+}
+
+function doIntersection(p1,q1,p2,q2) {
+    let o1 = orientation(p1, q1, p2);
+    let o2 = orientation(p1, q1, q2); 
+    let o3 = orientation(p2, q2, p1); 
+    let o4 = orientation(p2, q2, q1);
+    
+    if ((o1 !== o2) && (o3 !== o4))          return true;
+    if ((o1 === 0) && onSegment(p1, p2, q1)) return true;
+    if ((o2 === 0) && onSegment(p1, q2, q1)) return true;
+    if ((o3 === 0) && onSegment(p2, p1, q2)) return true;
+    if ((o4 === 0) && onSegment(p2, q1, q2)) return true;
+                                             return false;
 }
 
 function mouseClick(e) {
@@ -505,6 +615,13 @@ ground.isShootable = false;
 ground.isRect = true;
 ground.id = "ground";
 physicalObjects.push(ground);
+
+let pol = new Polygon(width/2, height/2, [[-10, 20], [-20, 20], [-20, -40], [30, -50]]);
+polygons.push(pol);
+
+let pol2 = new Polygon(width/2+50, height/2+50, squareVecs(10));
+polygons.push(pol2);
+
 
 player = new PhysicalObject(100, 100, 20, 20);
 player.color = "#000000";
