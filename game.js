@@ -1,17 +1,9 @@
-/**
- *  Intro
- * 
- *  Game made in pure javascript and HTML
- * 
- *  Game ideas:
- *      * Bow and arrow thing 
- *      * PHYSICS
- * 
- *  TODO:
- *      * ray tracing        checking if player can see balloon, for AI?
- *      * rotating boxes     if it falls on side of other box, check intersecting rotated boxes? work with polygons instead of whole rectangles
- *      * collision          transfer velocity, things need mass
- */
+
+/*
+
+Bow and arrow game made with pure html and javascript.
+
+*/
 
 // prototypes
 
@@ -37,16 +29,16 @@ const PLAYER_SVG = new Path2D
 
 let frame = 0;
 let fps = 0;
-let kw = false, 
-    ka = false, 
-    ks = false, 
-    kd = false;
+let kw = false, // key w
+    ka = false, // key a
+    ks = false, // key s
+    kd = false; // key d
 
 let score = 0;
 let hold = false; // holding mouse down
 let mouseFrame = 0;
-let mouseX  = 0,
-    mouseY = 0;
+let mouseX  = 0, // mouse x pos
+    mouseY = 0;  // mouse y pos
 
 let physicalObjects = [];
 let shots = [];
@@ -55,6 +47,7 @@ let polygons = [];
 let player;
 let idCounter = 0;
 
+// inventory
 const inv = {
     BOW: "bow",
     BLOCK: "block"
@@ -75,9 +68,15 @@ width *= 0.85;
 height *= 0.85;
 
 let canvas = d.getElementById('canvas');
+    canvas.tabIndex = 1;
+    resize();
+
+function resize() {
     canvas.width = width;
     canvas.height = height;
-    canvas.tabIndex = 1;
+}
+
+document.addEventListener('resize', resize);
 
 d.body.appendChild(canvas);
 
@@ -149,7 +148,7 @@ let Polygon = function(x, y, points) {
         
         polygons.forEach(obj => {
             if (obj.id !== this.id) {
-                if (frame & 1) console.log( isIntersectingPoly(this, obj));
+                if (frame % 4 === 0) console.log( !isIntersectingPoly(this, obj));
             }
         })
 
@@ -258,8 +257,6 @@ function frameRender() {
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, width, height);
 
-
-
     physicalObjects.forEach(obj => {
 
         ctx.fillStyle = obj.color;
@@ -276,10 +273,7 @@ function frameRender() {
             
             fillCircle(obj);
         }
-
-
         obj.nextFrame();
-
     });
 
     polygons.forEach(pol => {
@@ -386,6 +380,7 @@ function fillCircle(obj) {
     ctx.fill();
     ctx.stroke();
 }
+
 function randomHex()      {return '#'+Math.floor(random(100, 16777215)).toString(16);}
 function squareVecs(m)    {return [[-1*m, -1*m],[1*m, -1*m],[1*m, 1*m],[-1*m, 1*m]]}
 function random(min, max) {return Math.random() * (max - min) + min;}
@@ -428,6 +423,7 @@ function isIntersectingCirc(obj1, obj2) {
     return dist < obj1.width/2 + obj2.width/2;
 }
 
+// NOT WORKING CURRENTLY
 function isIntersectingPoly(obj1, obj2) {
 
     for (let i=0; i<obj1.points.length; i++) {
@@ -489,12 +485,9 @@ function mouseClick(e) {
 }
 
 function addBlock() {
-    let block = new PhysicalObject(mouseX-20, mouseY-20, 40, 40);
-    block.hasGravity = true;
-    block.isRect = true;
-    block.isShootable = false;
-    block.id = 
-    physicalObjects.push(block);
+
+    let pol = new Polygon(mouseX, mouseY, squareVecs(40));
+    polygons.push(pol);
 }
 
 function shoot() {
@@ -535,7 +528,6 @@ canvas.addEventListener('keydown', onKeyDown);
 canvas.addEventListener('keyup', onKeyUp);
 document.addEventListener('wheel', scroll);
 
-
 function onKeyDown(event) {  
     var keyCode = event.keyCode;
     switch (keyCode) {
@@ -557,25 +549,6 @@ function onKeyUp(event) {
         case 87: kw = false; break;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 for(let i = 0 ; i < MAX_OBJECTS ; i++) {
     let temp = new PhysicalObject(width/2, height-40, 20, 20);
