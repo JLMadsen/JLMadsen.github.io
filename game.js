@@ -424,6 +424,7 @@ function isIntersectingCirc(obj1, obj2) {
 }
 
 // NOT WORKING CURRENTLY
+// See http://paulbourke.net/geometry/pointlineplane/javascript.txt
 function isIntersectingPoly(obj1, obj2) {
 
     for (let i=0; i<obj1.points.length; i++) {
