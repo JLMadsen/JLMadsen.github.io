@@ -24,8 +24,6 @@ jobs:
         run: |
           git config --global user.name ""
           git config --global user.email ""
-        # use account 'github-actions[bot]' to set the git config
-
           git add -A
           git commit -m "Github actions script"
           git push
