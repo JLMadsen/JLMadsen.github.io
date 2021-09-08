@@ -40,5 +40,19 @@
         <h3><a href="/etc/noise">Noise generator</a></h3>
     </div>
 
+    <ul id="posts_list">
+
+    </ul>
+
+    <script>
+        (async () => {
+            fetch('./posts.txt')
+            .then(data => data.text)
+            .then(data => {
+                console.log(data)
+                document.getElementById('posts_list').innerHTML = data;
+            })
+        })()
+    </script>
 </body>
 </html>
