@@ -1,0 +1,13 @@
+
+<html>
+<body>
+<h2>etc</h2>
+<p>
+    <li><a href="game.html">game.html</a></li>
+    <li><a href="game.js">game.js</a></li>
+    <li><a href="noise.html">noise.html</a></li>
+    <li><a href="noise.js">noise.js</a></li>
+    <li><a href="styles.css">styles.css</a></li>
+</p>
+</body>
+</html>
