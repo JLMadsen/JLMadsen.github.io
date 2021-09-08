@@ -20,10 +20,8 @@ jobs:
       - name: Update directory listings
         run: python main.py
 
-      - name: Commit and Push
-        run: |
-          git config --global user.name ""
-          git config --global user.email ""
-          git add -A
-          git commit -m "Github actions script"
-          git push
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
