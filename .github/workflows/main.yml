@@ -19,3 +19,13 @@ jobs:
       # Runs a single command using the runners shell
       - name: Update directory listings
         run: python main.py
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name ""
+          git config --global user.email ""
+        # use account 'github-actions[bot]' to set the git config
+
+          git add -A
+          git commit -m "Github actions script"
+          git push
