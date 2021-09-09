@@ -1,1 +1,2 @@
+./posts/test2.md|also a test post
 ./posts/test.md|My first test post
