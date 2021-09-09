@@ -4,18 +4,15 @@ import sys
 def main():
     output = ''
     folder = './posts'
-    files = []
 
     for f in os.listdir((folder)):
 
         with open(folder +'/'+ f) as post:
             content = post.readlines()
-            title = content[0]
-            title = title[3:-3].strip()
+            title = content[0][3:-3].strip()
+            output += f'{folder}/{f}|{title}\n'
 
-            output += f'{folder}/{f}|{title}'
-
-    print(len(files), 'files found')
+    print(output.count('\n'), 'files found')
 
     #files = [f for f in os.listdir(folder) if '.md' in f]
     #output = '\n'.join([ f'<li href=\"./posts/{filename}\">{filename.split(".")[0]}</li>' for filename in files ])
