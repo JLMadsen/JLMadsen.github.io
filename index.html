@@ -46,11 +46,24 @@
 
     <script>
         (async () => {
-            fetch('./posts.txt')
-            .then(data => data.text)
-            .then(data => {
-                console.log(data)
-                document.getElementById('posts_list').innerHTML = data;
+            fetch('https://jlmadsen.github.io/posts.txt')
+            .then(data => data.text())
+            .then(data => data.split('\n'))
+            .then(data => {data.pop(); return data})
+            .then(posts => {
+
+                console.log(posts)
+                
+                let list = document.getElementById('posts_list')
+                posts.forEach(p => {
+                    let [url, title] = p.split('|');
+                    let link = document.createElement('a');
+                    link.href= url;
+                    link.innerText = title;
+                    let list_item = document.createElement('li')
+                    list_item.appendChild(link)
+                    list.appendChild(list_item)
+                })
             })
         })()
     </script>
