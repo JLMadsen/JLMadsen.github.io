@@ -1,2 +1,2 @@
-./posts/test2.md|also a test post (2021)
+./posts/test2.md|also a test post (2021)-
 ./posts/test.md|My first test post
