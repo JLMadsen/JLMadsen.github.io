@@ -57,7 +57,7 @@
         (async () => {
             let list = document.getElementById('post_list');
             
-            fetch('https://jlmadsen.github.io/posts.txt')
+            fetch('/posts.txt')
             .then(data => data.text())
             .then(data => data.split('\n'))
             .then(data => {data.pop(); return data})
