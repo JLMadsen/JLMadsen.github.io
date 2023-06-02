@@ -1,0 +1,16 @@
+:root {
+    --night: #0b090aff;
+    --eerie-black: #161a1dff;
+    --blood-red: #660708ff;
+    --cornell-red: #a4161aff;
+    --cornell-red-2: #ba181bff;
+    --imperial-red: #e5383bff;
+    --silver: #b1a7a6ff;
+    --timberwolf: #d3d3d3ff;
+    --white-smoke: #f5f3f4ff;
+    --white: #ffffffff;
+}
+
+html {
+    background-color: var(--night)
+}
