@@ -11,6 +11,17 @@
     --white: #ffffffff;
 }
 
-html {
-    background-color: var(--night)
+@font-face {
+    font-family: 'rocket';
+    font-weight: 900;
+    src: local('rocket'), url(./fonts/rocket.ttf) format('truetype');
 }
+
+* {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+html, body {
+    background-color: var(--eerie-black);
+}
+
