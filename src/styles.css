@@ -1,6 +1,6 @@
 :root {
     --night: #0b090aff;
-    --eerie-black: #161a1dff;
+    --eerie-black: rgb(29, 35, 39);
     --blood-red: #660708ff;
     --cornell-red: #a4161aff;
     --cornell-red-2: #ba181bff;

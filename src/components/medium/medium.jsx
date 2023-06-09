@@ -7,6 +7,10 @@ function Medium() {
 	const feedUrl =
 		"https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@jakob.m";
 	const [articles, setArticles] = useState([]);
+	const altTitles = {
+		"4fa8f8c5eb1c":
+			"React-Leaflet 101: Bringing Interactive Maps to Your React Projects",
+	};
 
 	useEffect(() => {
 		(async () => {
@@ -18,7 +22,8 @@ function Medium() {
 						link: item.link,
 						date: item.pubDate,
 						img: item.thumbnail,
-						title: item.title,
+						title:
+							altTitles[item.guid.split("/").pop()] ?? item.title,
 						cats: item.categories,
 					};
 				})
@@ -42,25 +47,36 @@ function Medium() {
 									textDecoration: "none",
 								}}
 							>
-								<Card style={{border: "0px", boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px"}}>
+								<Card
+									style={{
+										border: "0px",
+										boxShadow:
+											"rgba(149, 157, 165, 0.2) 0px 8px 24px",
+									}}
+								>
 									<Card.Img
-										style={{ objectFit: "scale-down" }}
+										style={{
+											objectFit: "scale-down",
+										}}
 										variant="top"
 										src={article.img}
-										height={"300px"}
+										height={"250px"}
 									/>
 									<Card.Body>
 										<Card.Title>{article.title}</Card.Title>
 										<Card.Subtitle className="text-muted">
-											{article.date}
+											{new Date(
+												article.date
+											).getFullYear()}
 										</Card.Subtitle>
 										<Card.Text>
 											{article.description}
 										</Card.Text>
 										{article.cats.map((category) => (
 											<Badge
-                                            key={category}
-												bg="light" text="dark"
+												key={category}
+												bg="light"
+												text="dark"
 												className="m-1"
 											>
 												{category}
