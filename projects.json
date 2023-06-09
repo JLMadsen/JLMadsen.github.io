@@ -1,0 +1,25 @@
+{
+    "projects": [
+        {
+            "name": "GeoTrace",
+            "description": "Desktop application which traces a path from you to an IP or DNS. Uses Traceroute / Tracert get a list of visited IPs, using these it fetches the geolocation and plots it on a 2D map.",
+            "stack": ["C++","Qt6","QMake"],
+            "image": "https://i.imgur.com/wmvmjMR.gif",
+            "link": "https://github.com/JLMadsen/GeoTrace"
+        },
+        {
+            "name": "Tetris AI",
+            "description": "AI playing Tetris. Implemented with genetic algorithm, imitation and DQN.",
+            "stack": ["Python","PyTorch","Pygame"],
+            "image": "https://raw.githubusercontent.com/JLMadsen/TetrisAI/main/rapporter/imgs/demo.gif",
+            "link": "https://github.com/jlmadsen/tetrisai"
+        },
+        {
+            "name": "Den Lure Vind",
+            "description": "Webpage and Server running on a Oracle Cloud VM. Serves some functionality for my portefolio. Mostly used for testing new things and hosting content.",
+            "stack": ["Javascript","Node","Postgres Database","HTML","CSS"],
+            "image": "https://i.imgur.com/PSQaswl.png",
+            "link": "https://denlurevind.com/"
+        }
+    ]
+}
