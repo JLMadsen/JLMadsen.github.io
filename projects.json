@@ -9,7 +9,7 @@
 		},
 		{
 			"name": "Tetris AI",
-			"description": "This repository provides a comprehensive evaluation and comparison of different algorithms applied to playing Tetris: Genetic Algorithm, Imitation Learning with Deep Q-Network (DQN), and Natural Selection. Tetris, a popular puzzle game, serves as the testing ground for assessing the performance and effectiveness of each algorithm in achieving high scores and optimal gameplay strategies. By exploring these various approaches, researchers and enthusiasts can gain valuable insights into the strengths and weaknesses of each method when applied to the Tetris domain.",
+			"description": "This repository provides a comprehensive evaluation and comparison of different algorithms applied to playing Tetris: Genetic Algorithm, Imitation Learning with Deep Q-Network (DQN), and Natural Selection. Tetris, a popular puzzle game, serves as the testing ground for assessing the performance and effectiveness of each algorithm in achieving high scores and optimal gameplay strategies.",
 			"stack": ["Python", "PyTorch", "Pygame"],
 			"image": "https://raw.githubusercontent.com/JLMadsen/TetrisAI/main/rapporter/imgs/demo.gif",
 			"link": "https://github.com/jlmadsen/tetrisai"
