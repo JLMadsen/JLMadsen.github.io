@@ -17,9 +17,26 @@
 		{
 			"name": "Den Lure Vind",
 			"description": "Webpage and Server running on a Oracle Cloud VM. Serves some functionality for my portefolio. Mostly used for testing new things and hosting content.",
-			"stack": ["Javascript", "Node", "Postgres Database", "HTML", "CSS"],
+			"stack": [
+				"Javascript",
+				"Node",
+				"Express",
+				"Postgres Database",
+				"HTML",
+				"CSS"
+			],
 			"image": "./denlurevind.png",
 			"link": "https://denlurevind.com/"
+		}
+	],
+	"wip": [
+		{
+			"name": "ListR",
+			"description": "ListR is a simple and efficient Android app designed for creating and managing lists. Developed primarily for personal use, its main purpose revolves around shopping lists. With ListR, users can easily create, save, and load lists, allowing for seamless organization and retrieval. Additionally, the app offers a convenient 'Copy to Clipboard' feature, enabling users to effortlessly duplicate lists for quick sharing or reference.",
+			"stack": ["Flutter", "Android SDK"],
+			"image": "./listr.png",
+			"link": "https://play.google.com/store/apps/details?id=dsen.ListR",
+			"show": false
 		}
 	]
 }
