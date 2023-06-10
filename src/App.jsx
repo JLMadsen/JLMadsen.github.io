@@ -2,9 +2,12 @@ import { Col, Container, Row } from "react-bootstrap";
 import Medium from "./components/medium/medium";
 import About from "./components/about/about";
 import Projects from "./components/projects/projects";
-import Contact from "./components/contact/contact";
+import Map from "./components/map/map";
+// import Contact from "./components/contact/contact";
 
 function App() {
+	const isMobile = window.innerWidth < 750;
+
 	return (
 		<div className="mt-4 mb-4">
 			<Container
@@ -12,9 +15,11 @@ function App() {
 					borderRadius: "5px",
 					background: "#eee",
 					color: "#444",
+					position: "relative",
 				}}
 			>
-				<Row className="justify-content-md-center">
+				{!isMobile && <Map />}
+				<Row className="justify-content-md-center z-3">
 					<Col xs lg="6" className="mt-3">
 						<h1 style={{ textAlign: "center" }}>
 							Jakob Lønnerød Madsen
@@ -27,13 +32,13 @@ function App() {
 						</h4>
 					</Col>
 				</Row>
-				<Row className="mt-4">
+				<Row className="mt-4 z-3">
 					<About />
 				</Row>
 				<Row>
 					<Projects />
 				</Row>
-				<Row className="p-4">
+				<Row className="p-4 z-3">
 					<Medium />
 				</Row>
 			</Container>

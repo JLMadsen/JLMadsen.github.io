@@ -33,16 +33,18 @@ function About() {
 					degree in computer science from NTNU where his thesis
 					explored ethical hacking, Jakob has worked with
 					organizations such as Kripos and Vipps, gaining expertise in
-					fullstack development using .Net and React. Jakob actively
-					participates in the software development community,
-					attending events like NDC Oslo, writing technical articles,
-					and engaging in Advent of Code challenges. Additionally, he
-					has attended Microsoft University and holds an Azure
-					certification, showcasing his proficiency in developing
-					cloud-based applications. Alongside his full-time role, he
-					also works part-time as a freelance developer at Madsen
-					Technologies, showcasing his passion for continuous learning
-					and commitment to delivering high-quality solutions.
+					fullstack development using .Net and React.
+					<br />
+					Jakob actively participates in the software development
+					community, attending events like NDC Oslo, writing technical
+					articles, and engaging in Advent of Code challenges.
+					Additionally, he has attended Microsoft University and holds
+					an Azure certification, showcasing his proficiency in
+					developing cloud-based applications. Alongside his full-time
+					role, he also works part-time as a freelance developer at
+					Madsen Technologies, showcasing his passion for continuous
+					learning and commitment to delivering high-quality
+					solutions.
 				</p>
 				<Contact />
 			</div>
