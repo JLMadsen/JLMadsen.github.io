@@ -1,20 +1,14 @@
-import { Col, Container, Row } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import Contact from "../contact/contact";
 
 function About() {
-	const workYears = () => {
-		const now = new Date();
-		const then = new Date(2021, 8, 1);
-		return new Date(now - then).getFullYear() - 1970 + 1;
-	};
-
 	return (
 		<Row className="d-flex justify-content-md-center">
 			<div style={{ maxWidth: "720px" }}>
 				<div className="d-contents">
 					<img
 						height="200px"
-						src="./jakob.png"
+						src="./images/jakob.png"
 						style={{ float: "left" }}
 					/>
 				</div>

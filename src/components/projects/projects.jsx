@@ -1,20 +1,11 @@
-import { Badge, Col, Row } from "react-bootstrap";
+import { Badge, Row } from "react-bootstrap";
 import StyledTitle from "../styledTitle";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import WavyLink from "../wavyLink";
 
 function Projects() {
-	const [projects, setProjects] = useState([]);
+	const data = require("../../data/projects.json");
 	const isMobile = window.innerWidth < 750;
 	let previousProject = null;
-
-	useEffect(() => {
-		(async () => {
-			const response = await axios.get("/projects.json");
-			setProjects(response.data.projects);
-		})();
-	}, []);
 
 	const renderText = (project, isMobile, reversed) => {
 		if (!project) return <div />;
@@ -58,10 +49,6 @@ function Projects() {
 						boxShadow: `rgba(0, 0, 0, 0.5) ${
 							reversed ? "" : "-"
 						}10px 20px 40px`,
-
-						// filter: `drop-shadow(${
-						// 	reversed ? "" : "-"
-						// }10px 20px 40px rgba(0, 0, 0, 0.5))`,
 						margin: "0 40% 0 auto",
 					}}
 					src={project.image}
@@ -74,7 +61,7 @@ function Projects() {
 		<div>
 			<Row className="justify-content-md-center mt-2">
 				<StyledTitle title={"Projects"} />
-				{[...projects, null].map((project, idx) => {
+				{[...data.projects, null].map((project, idx) => {
 					const reversed = idx % 2 === 0;
 					const text = renderText(
 						previousProject,
