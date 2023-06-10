@@ -41,6 +41,7 @@ function Medium() {
 					return (
 						<Col key={article.guid} className="p-2">
 							<a
+								target="_blank"
 								href={article.link}
 								style={{
 									color: "black",

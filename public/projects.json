@@ -1,25 +1,42 @@
 {
-    "projects": [
-        {
-            "name": "GeoTrace",
-            "description": "Desktop application which traces a path from you to an IP or DNS. Uses Traceroute / Tracert get a list of visited IPs, using these it fetches the geolocation and plots it on a 2D map.",
-            "stack": ["C++","Qt6","QMake"],
-            "image": "https://i.imgur.com/wmvmjMR.gif",
-            "link": "https://github.com/JLMadsen/GeoTrace"
-        },
-        {
-            "name": "Tetris AI",
-            "description": "AI playing Tetris. Implemented with genetic algorithm, imitation and DQN.",
-            "stack": ["Python","PyTorch","Pygame"],
-            "image": "https://raw.githubusercontent.com/JLMadsen/TetrisAI/main/rapporter/imgs/demo.gif",
-            "link": "https://github.com/jlmadsen/tetrisai"
-        },
-        {
-            "name": "Den Lure Vind",
-            "description": "Webpage and Server running on a Oracle Cloud VM. Serves some functionality for my portefolio. Mostly used for testing new things and hosting content.",
-            "stack": ["Javascript","Node","Postgres Database","HTML","CSS"],
-            "image": "https://i.imgur.com/PSQaswl.png",
-            "link": "https://denlurevind.com/"
-        }
-    ]
+	"projects": [
+		{
+			"name": "GeoTrace",
+			"description": "GeoTrace is a tool that allows users to visualize and analyze traceroute paths by plotting them on a map. Developed using Qt, this application provides an intuitive and user-friendly interface for network diagnostics and troubleshooting. By leveraging geolocation data, GeoTrace brings a geographical context to network analysis, enabling users to easily identify and understand the routes taken by their network traffic.",
+			"stack": ["C++", "Qt6", "QMake"],
+			"image": "./geotrace.gif",
+			"link": "https://github.com/JLMadsen/GeoTrace"
+		},
+		{
+			"name": "Tetris AI",
+			"description": "This repository provides a comprehensive evaluation and comparison of different algorithms applied to playing Tetris: Genetic Algorithm, Imitation Learning with Deep Q-Network (DQN), and Natural Selection. Tetris, a popular puzzle game, serves as the testing ground for assessing the performance and effectiveness of each algorithm in achieving high scores and optimal gameplay strategies.",
+			"stack": ["Python", "PyTorch", "Pygame"],
+			"image": "./tetrisai.gif",
+			"link": "https://github.com/jlmadsen/tetrisai"
+		},
+		{
+			"name": "Den Lure Vind",
+			"description": "Webpage and Server running on a Oracle Cloud VM. Serves some functionality for my portefolio. Mostly used for testing new things and hosting content.",
+			"stack": [
+				"Javascript",
+				"Node",
+				"Express",
+				"Postgres Database",
+				"HTML",
+				"CSS"
+			],
+			"image": "./denlurevind.png",
+			"link": "https://denlurevind.com/"
+		}
+	],
+	"wip": [
+		{
+			"name": "ListR",
+			"description": "ListR is a simple and efficient Android app designed for creating and managing lists. Developed primarily for personal use, its main purpose revolves around shopping lists. With ListR, users can easily create, save, and load lists, allowing for seamless organization and retrieval. Additionally, the app offers a convenient 'Copy to Clipboard' feature, enabling users to effortlessly duplicate lists for quick sharing or reference.",
+			"stack": ["Flutter", "Android SDK"],
+			"image": "./listr.png",
+			"link": "https://play.google.com/store/apps/details?id=dsen.ListR",
+			"show": false
+		}
+	]
 }

@@ -1,4 +1,4 @@
-import { Col, Row } from "react-bootstrap";
+import { Badge, Col, Row } from "react-bootstrap";
 import StyledTitle from "../styledTitle";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -14,14 +14,25 @@ function Projects() {
 			const response = await axios.get("/projects.json");
 			setProjects(response.data.projects);
 		})();
-	});
+	}, []);
 
-	const renderText = (project, isMobile) => {
+	const renderText = (project, isMobile, reversed) => {
 		if (!project) return <div />;
 		return (
-			<div className={isMobile ? "w-100" : "w-50"}>
+			<div
+				className={`${isMobile ? "w-100" : "w-50"} p${
+					reversed ? "e" : "s"
+				}-4`}
+			>
 				<h2>{project.name}</h2>
+				{project.stack.map((tech) => (
+					<Badge key={tech} bg="light" text="dark" className="m-1">
+						{tech}
+					</Badge>
+				))}
+				<br />
 				<p>{project.description}</p>
+
 				<WavyLink link={project.link} text={"Check it out!"} />
 			</div>
 		);
@@ -30,7 +41,13 @@ function Projects() {
 	const renderImage = (project, isMobile, reversed) => {
 		if (!project) return <div />;
 		return !isMobile ? (
-			<div className="w-50">
+			<div
+				className={`w-50`}
+				style={{
+					display: "flex",
+					alignItems: "flex-end",
+				}}
+			>
 				<img
 					style={{
 						height: "18vw",
@@ -41,6 +58,11 @@ function Projects() {
 						boxShadow: `rgba(0, 0, 0, 0.5) ${
 							reversed ? "" : "-"
 						}10px 20px 40px`,
+
+						// filter: `drop-shadow(${
+						// 	reversed ? "" : "-"
+						// }10px 20px 40px rgba(0, 0, 0, 0.5))`,
+						margin: "0 40% 0 auto",
 					}}
 					src={project.image}
 				/>
@@ -54,13 +76,17 @@ function Projects() {
 				<StyledTitle title={"Projects"} />
 				{[...projects, null].map((project, idx) => {
 					const reversed = idx % 2 === 0;
-					const text = renderText(previousProject, isMobile);
+					const text = renderText(
+						previousProject,
+						isMobile,
+						reversed
+					);
 					const image = renderImage(project, isMobile, reversed);
 					previousProject = project ?? null;
 					return (
 						<div
 							key={project?.name ?? idx}
-							className="ms-4 pe-4 mt-4 mb-4"
+							className="mt-4 mb-4 ps-4 pe-4"
 						>
 							<div className="d-flex justify-content-between">
 								{reversed ? (
