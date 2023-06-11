@@ -28,7 +28,7 @@ function About() {
 					back-end web development, cloud computing, chat
 					functionality integration, antivirus integration, and
 					security implementation. */}
-					Jakob Madsen is an experienced software developer currently
+					{/* Jakob Madsen is an experienced software developer currently
 					employed at Sopra Steria for two years. With a bachelor's
 					degree in computer science from NTNU where his thesis
 					explored ethical hacking, Jakob has worked with
@@ -44,7 +44,25 @@ function About() {
 					role, he also works part-time as a freelance developer at
 					Madsen Technologies, showcasing his passion for continuous
 					learning and commitment to delivering high-quality
-					solutions.
+					solutions. */}
+					I'm Jakob Madsen, a software developer with two years of
+					experience at Sopra Steria. I hold a bachelor's degree in
+					computer science from NTNU, where I focused on ethical
+					hacking in my thesis. Throughout my career, I have worked
+					with organizations like Kripos and Vipps, specializing in
+					fullstack development using .Net and React.
+					<br />
+					I actively engage in the software development community,
+					attending events like NDC Oslo, writing technical articles,
+					and participating in Advent of Code challenges. I have also
+					attended Microsoft University and hold an Azure
+					certification, showcasing my expertise in developing
+					cloud-based applications.
+					<br />
+					In addition to my full-time role, I work part-time as a
+					freelance developer at Madsen Technologies. This allows me
+					to pursue continuous learning and deliver high-quality
+					solutions while maintaining a passion for my work.
 				</p>
 				<Contact />
 			</div>

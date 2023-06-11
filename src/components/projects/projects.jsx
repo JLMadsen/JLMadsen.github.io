@@ -12,16 +12,22 @@ function Projects() {
 		return (
 			<div
 				className={`${isMobile ? "w-100" : "w-50"} p${
-					reversed ? "e" : "s"
+					reversed || isMobile ? "e" : "s"
 				}-4`}
 			>
 				<h2>{project.name}</h2>
-				{project.stack.map((tech) => (
-					<Badge key={tech} bg="light" text="dark" className="m-1">
-						{tech}
-					</Badge>
-				))}
-				<br />
+				<div className="mb-2">
+					{project.stack.map((tech) => (
+						<Badge
+							key={tech}
+							bg="light"
+							text="dark"
+							className="m-1 ms-0 me-2"
+						>
+							{tech}
+						</Badge>
+					))}
+				</div>
 				<p>{project.description}</p>
 
 				<WavyLink link={project.link} text={"Check it out!"} />
@@ -31,9 +37,9 @@ function Projects() {
 
 	const renderImage = (project, isMobile, reversed) => {
 		if (!project) return <div />;
-		return !isMobile ? (
+		return (
 			<div
-				className={`w-50`}
+				className={`${isMobile ? "w-100 mb-4" : "w-50"}`}
 				style={{
 					display: "flex",
 					alignItems: "flex-end",
@@ -49,12 +55,12 @@ function Projects() {
 						boxShadow: `rgba(0, 0, 0, 0.5) ${
 							reversed ? "" : "-"
 						}10px 20px 40px`,
-						margin: "0 40% 0 auto",
+						margin: `${isMobile ? "auto" : "0 40% 0 auto"}`,
 					}}
 					src={project.image}
 				/>
 			</div>
-		) : null;
+		);
 	};
 
 	return (
@@ -64,7 +70,7 @@ function Projects() {
 				{[...data.projects, null].map((project, idx) => {
 					const reversed = idx % 2 === 0;
 					const text = renderText(
-						previousProject,
+						!isMobile ? previousProject : project,
 						isMobile,
 						reversed
 					);
@@ -75,8 +81,14 @@ function Projects() {
 							key={project?.name ?? idx}
 							className="mt-4 mb-4 ps-4 pe-4"
 						>
-							<div className="d-flex justify-content-between">
-								{reversed ? (
+							<div
+								className={
+									!isMobile
+										? "d-flex justify-content-between"
+										: ""
+								}
+							>
+								{reversed && !isMobile ? (
 									<>
 										{text}
 										{image}

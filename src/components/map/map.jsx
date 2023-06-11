@@ -4,7 +4,7 @@ function Map() {
 			style={{
 				zIndex: "1",
 				position: "absolute",
-				right: "-100px",
+				right: "-200px",
 				top: "-80px",
 				userSelect: "none",
 			}}
