@@ -12,15 +12,15 @@ function Map() {
 			<img
 				src="./images/norway.svg"
 				style={{
-					maxHeight: "50vh",
+					maxHeight: "40em",
 					opacity: ".1",
 				}}
 			/>
 			<div
 				style={{
 					position: "absolute",
-					left: "128px",
-					top: "550px",
+					left: "127px",
+					top: "545px",
 					opacity: ".2",
 				}}
 			>
@@ -28,7 +28,7 @@ function Map() {
 					src="./images/pin.svg"
 					style={{
 						filter: "saturate(100)",
-						maxHeight: "3vh",
+						maxHeight: "2.4em",
 						opacity: "2",
 					}}
 				/>

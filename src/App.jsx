@@ -3,10 +3,16 @@ import Medium from "./components/medium/medium";
 import About from "./components/about/about";
 import Projects from "./components/projects/projects";
 import Map from "./components/map/map";
+import { useEffect, useReducer } from "react";
 // import Contact from "./components/contact/contact";
 
 function App() {
+	const forceUpdate = useReducer((x) => x + 1, 0)[1];
 	const isMobile = window.innerWidth < 750;
+
+	useEffect(() => {
+		window.addEventListener("resize", forceUpdate, false);
+	}, []);
 
 	return (
 		<div className="mt-4 mb-4">
@@ -16,6 +22,7 @@ function App() {
 					background: "#eee",
 					color: "#444",
 					position: "relative",
+					overflow: "hidden",
 				}}
 			>
 				{!isMobile && <Map />}

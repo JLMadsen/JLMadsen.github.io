@@ -47,8 +47,8 @@ function Projects() {
 			>
 				<img
 					style={{
-						height: "18vw",
-						maxHeight: "270px",
+						height: isMobile ? "140px" : "18vw",
+						maxHeight: isMobile ? "380px" : "270px",
 						transform: `perspective(400px) rotate3D(0, -1, 0, ${
 							reversed ? "" : "-"
 						}8deg)`,
