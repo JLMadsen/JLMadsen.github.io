@@ -4,6 +4,7 @@ import About from "./components/about/about";
 import Projects from "./components/projects/projects";
 import Map from "./components/map/map";
 import { useEffect, useReducer } from "react";
+import Skills from "./components/skills/skills";
 // import Contact from "./components/contact/contact";
 
 function App() {
@@ -19,10 +20,10 @@ function App() {
 			<Container
 				style={{
 					borderRadius: "5px",
-					background: "#eee",
+					// background: "#eee",
 					color: "#444",
 					position: "relative",
-					overflow: "hidden",
+					// overflow: "hidden",
 				}}
 			>
 				{!isMobile && <Map />}
@@ -42,6 +43,9 @@ function App() {
 				<Row className="mt-4 z-3">
 					<About />
 				</Row>
+				{/* <Row className="mt-4 z-3">
+					<Skills />
+				</Row> */}
 				<Row>
 					<Projects />
 				</Row>
@@ -49,6 +53,16 @@ function App() {
 					<Medium />
 				</Row>
 			</Container>
+			<div
+				style={{
+					color: "#aaa",
+					textAlign: "center",
+					fontSize: "small",
+					fontFamily: "consolas",
+				}}
+			>
+				Madsen Technologies | Org.nr. 931 575 155
+			</div>
 		</div>
 	);
 }

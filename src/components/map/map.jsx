@@ -4,7 +4,7 @@ function Map() {
 			style={{
 				zIndex: "1",
 				position: "absolute",
-				right: "-200px",
+				right: "0",
 				top: "-80px",
 				userSelect: "none",
 			}}
@@ -14,13 +14,14 @@ function Map() {
 				style={{
 					maxHeight: "40em",
 					opacity: ".1",
+					marginRight: "-200px",
 				}}
 			/>
 			<div
 				style={{
 					position: "absolute",
-					left: "127px",
-					top: "545px",
+					left: "136px",
+					top: "580px",
 					opacity: ".2",
 				}}
 			>

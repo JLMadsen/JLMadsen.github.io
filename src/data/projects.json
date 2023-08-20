@@ -1,11 +1,12 @@
 {
 	"projects": [
 		{
-			"name": "GeoTrace",
-			"description": "GeoTrace is a tool that allows users to visualize and analyze traceroute paths by plotting them on a map. Developed using Qt, this application provides an intuitive and user-friendly interface for network diagnostics and troubleshooting. By leveraging geolocation data, GeoTrace brings a geographical context to network analysis, enabling users to easily identify and understand the routes taken by their network traffic.",
-			"stack": ["C++", "Qt6", "QMake"],
-			"image": "./images/geotrace.gif",
-			"link": "https://github.com/JLMadsen/GeoTrace"
+			"name": "Yum Audio",
+			"task": "Subscriptions and Tokens",
+			"description": "Yum Audio is a German studio comprising skilled developers and designers who are dedicated to producing exceptional audio software. Their primary objective is to develop tools that excel in sound quality, performance, and design. Their plugins are designed to enable users to effortlessly enjoy the process of creating music and sound, fostering a fun and creative environment.",
+			"stack": ["Vue.js", "AWS", "Typescript", "FastSpring", "DynamoDB"],
+			"image": "./images/yumaudio.png",
+			"link": "https://yum-audio.com/"
 		},
 		{
 			"name": "Tetris AI",
@@ -15,8 +16,16 @@
 			"link": "https://github.com/jlmadsen/tetrisai"
 		},
 		{
+			"name": "GeoTrace",
+			"description": "GeoTrace is a tool that allows users to visualize and analyze traceroute paths by plotting them on a map. Developed using Qt, this application provides an intuitive and user-friendly interface for network diagnostics and troubleshooting. By leveraging geolocation data, GeoTrace brings a geographical context to network analysis, enabling users to easily identify and understand the routes taken by their network traffic.",
+			"stack": ["C++", "Qt6", "QMake"],
+			"image": "./images/geotrace.gif",
+			"link": "https://github.com/JLMadsen/GeoTrace"
+		},
+
+		{
 			"name": "Den Lure Vind",
-			"description": "Webpage and Server running on a Oracle Cloud VM. Serves some functionality for my portefolio. Mostly used for testing new things and hosting content.",
+			"description": "Den Lure Vind is a webpage and server hosted on an Oracle Cloud VM. It serves as a platform for showcasing portfolio content and provides various functionalities. The primary purpose of Den Lure Vind is to facilitate the testing of new concepts and techniques. It has played a crucial role in the my journey of acquiring in-depth knowledge of CSS and virtual machines.",
 			"stack": [
 				"Javascript",
 				"Node",

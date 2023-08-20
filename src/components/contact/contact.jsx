@@ -13,6 +13,7 @@ function Contact() {
 	];
 	return (
 		<div>
+			<h4>Connect with me on:</h4>
 			<ul>
 				{links.map((link) => {
 					return (

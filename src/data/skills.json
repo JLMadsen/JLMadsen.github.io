@@ -1,0 +1,11 @@
+{
+	"skills": [
+		{
+			"title": "Computer Science",
+			"description": "Bachelors Degree: Agile Security Audit of Picterus",
+			"location": "NTNU, Trondheim",
+			"image": "./images/ntnu.png",
+			"years": "3"
+		}
+	]
+}

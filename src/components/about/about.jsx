@@ -54,10 +54,7 @@ function About() {
 					<br />
 					I actively engage in the software development community,
 					attending events like NDC Oslo, writing technical articles,
-					and participating in Advent of Code challenges. I have also
-					attended Microsoft University and hold an Azure
-					certification, showcasing my expertise in developing
-					cloud-based applications.
+					and participating in Advent of Code challenges.
 					<br />
 					In addition to my full-time role, I work part-time as a
 					freelance developer at Madsen Technologies. This allows me

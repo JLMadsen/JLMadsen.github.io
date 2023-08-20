@@ -4,8 +4,8 @@ function WavyLink({ link, text }) {
 			href={link}
 			target="_blank"
 			style={{
-				color: "#222",
-				textDecoration: "#888 wavy underline .1em",
+				color: "royalblue",
+				textDecoration: "royalblue underline 2px",
 				fontSize: "larger",
 			}}
 		>

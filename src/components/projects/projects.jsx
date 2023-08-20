@@ -16,6 +16,9 @@ function Projects() {
 				}-4`}
 			>
 				<h2>{project.name}</h2>
+				{project.task ? (
+					<h5 className="text-muted">{project.task}</h5>
+				) : null}
 				<div className="mb-2">
 					{project.stack.map((tech) => (
 						<Badge
@@ -39,7 +42,7 @@ function Projects() {
 		if (!project) return <div />;
 		return (
 			<div
-				className={`${isMobile ? "w-100 mb-4" : "w-50"}`}
+				className={`${isMobile ? "w-100 mb-4" : "w-50 ms-4"}`}
 				style={{
 					display: "flex",
 					alignItems: "flex-end",
@@ -47,11 +50,13 @@ function Projects() {
 			>
 				<img
 					style={{
-						height: isMobile ? "140px" : "18vw",
-						maxHeight: isMobile ? "380px" : "270px",
-						transform: `perspective(400px) rotate3D(0, -1, 0, ${
-							reversed ? "" : "-"
-						}8deg)`,
+						height: isMobile ? "160px" : "18vw",
+						maxHeight: isMobile ? "400px" : "270px",
+						transform: !isMobile
+							? `perspective(400px) rotate3D(0, -1, 0, ${
+									reversed ? "" : "-"
+							  }8deg)`
+							: null,
 						boxShadow: `rgba(0, 0, 0, 0.5) ${
 							reversed ? "" : "-"
 						}10px 20px 40px`,
