@@ -20,8 +20,8 @@ function Map() {
 			<div
 				style={{
 					position: "absolute",
-					left: "136px",
-					top: "580px",
+					left: "128px",
+					top: "545px",
 					opacity: ".2",
 				}}
 			>

@@ -14,6 +14,7 @@ function Projects() {
 				className={`${isMobile ? "w-100" : "w-50"} p${
 					reversed || isMobile ? "e" : "s"
 				}-4`}
+				style={{ fontSize: "17px" }}
 			>
 				<h2>{project.name}</h2>
 				{project.task ? (
