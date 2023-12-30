@@ -12,6 +12,15 @@ function Medium() {
 			"React-Leaflet 101: Bringing Interactive Maps to Your React Projects",
 	};
 
+	const altImages = {
+		"4fa8f8c5eb1c":
+			"https://miro.medium.com/v2/resize:fit:720/format:webp/1*jrmWnhURrTLnoTX2FdevQA.png",
+		"6b192aa3de0b":
+			"https://miro.medium.com/v2/resize:fit:720/format:webp/1*B2xrnv1NRc0Bf6vi_Q53vA.png",
+		"14f459681a15":
+			"https://miro.medium.com/v2/resize:fit:640/format:webp/1*K5s4mY1f0DP1h-rcYoMq5w.png",
+	};
+
 	useEffect(() => {
 		(async () => {
 			const response = await axios.get(feedUrl);
@@ -21,7 +30,9 @@ function Medium() {
 						guid: item.guid,
 						link: item.link,
 						date: item.pubDate,
-						img: item.thumbnail,
+						img:
+							altImages[item.guid.split("/").pop()] ??
+							item.thumbnail,
 						title:
 							altTitles[item.guid.split("/").pop()] ?? item.title,
 						cats: item.categories,
