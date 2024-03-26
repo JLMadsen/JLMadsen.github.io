@@ -1,0 +1,164 @@
+{
+	"articles": [
+		{
+			"title": "Integrating Serilog with Entity Framework and custom Entities",
+			"date": "2024-03-20 09:32:05",
+			"image": "https://miro.medium.com/v2/resize:fit:360/format:webp/1*IqqRZfI1JaXQya1PJIMaxw.png",
+			"categories": [
+				"csharp",
+				"entity-framework-core",
+				"serilog",
+				"net8",
+				"logging"
+			],
+			"link": "https://medium.com/sopra-steria-norge/integrating-serilog-with-entity-framework-and-custom-entities-3fc62700d34c",
+			"guid": "3fc62700d34c"
+		},
+		{
+			"title": "React-Leaflet 101: Bringing Interactive Maps to Your React Projects",
+			"date": "2023-03-30 10:27:31",
+			"image": "https://miro.medium.com/v2/resize:fit:360/format:webp/1*jrmWnhURrTLnoTX2FdevQA.png",
+			"categories": [
+				"react",
+				"leaflet",
+				"react-leaflet",
+				"technology",
+				"javascript"
+			],
+			"link": "https://medium.com/sopra-steria-norge/react-leaflet-a-short-intro-with-animations-4fa8f8c5eb1c",
+			"guid": "4fa8f8c5eb1c"
+		},
+		{
+			"title": "Msal-React: Authorize AD Users with Groups",
+			"date": "2022-01-27 07:31:18",
+			"image": "https://miro.medium.com/v2/resize:fit:360/format:webp/1*B2xrnv1NRc0Bf6vi_Q53vA.png",
+			"categories": [
+				"azure-active-directory",
+				"react",
+				"msal",
+				"technology",
+				"ad-group"
+			],
+			"link": "https://medium.com/sopra-steria-norge/msal-react-authorize-ad-users-with-groups-6b192aa3de0b",
+			"guid": "6b192aa3de0b"
+		},
+		{
+			"title": "Msal-React: Fetching Job Info from Microsoft Graph",
+			"date": "2022-01-27 07:30:51",
+			"image": "https://miro.medium.com/v2/resize:fit:360/format:webp/1*K5s4mY1f0DP1h-rcYoMq5w.png",
+			"categories": [
+				"technology",
+				"microsoft-graph-api",
+				"msal",
+				"azure-active-directory",
+				"react"
+			],
+			"link": "https://medium.com/sopra-steria-norge/msal-react-fetching-job-info-from-microsoft-graph-14f459681a15",
+			"guid": "14f459681a15"
+		}
+	],
+	"projects": [
+		{
+			"name": "Yum Audio",
+			"task": "Subscriptions and Tokens",
+			"description": "Yum Audio is a German studio comprising skilled developers and designers who are dedicated to producing exceptional audio software. Their primary objective is to develop tools that excel in sound quality, performance, and design. Their plugins are designed to enable users to effortlessly enjoy the process of creating music and sound, fostering a fun and creative environment.",
+			"stack": ["Vue.js", "AWS", "Typescript", "FastSpring", "DynamoDB"],
+			"image": "./images/projects/yumaudio.webp",
+			"link": "https://yum-audio.com/"
+		},
+		{
+			"name": "Tetris AI",
+			"description": "This repository provides a comprehensive evaluation and comparison of different algorithms applied to playing Tetris: Genetic Algorithm, Imitation Learning with Deep Q-Network (DQN), and Natural Selection. Tetris, a popular puzzle game, serves as the testing ground for assessing the performance and effectiveness of each algorithm in achieving high scores and optimal gameplay strategies.",
+			"stack": ["Python", "PyTorch", "Pygame"],
+			"image": "./images/projects/tetrisai.gif",
+			"link": "https://github.com/jlmadsen/tetrisai"
+		},
+		{
+			"name": "GeoTrace",
+			"description": "GeoTrace is a tool that allows users to visualize and analyze traceroute paths by plotting them on a map. Developed using Qt, this application provides an intuitive and user-friendly interface for network diagnostics and troubleshooting. By leveraging geolocation data, GeoTrace brings a geographical context to network analysis, enabling users to easily identify and understand the routes taken by their network traffic.",
+			"stack": ["C++", "Qt6", "QMake"],
+			"image": "./images/projects/geotrace.webp",
+			"link": "https://github.com/JLMadsen/GeoTrace"
+		},
+		{
+			"name": "Den Lure Vind",
+			"description": "Den Lure Vind is a webpage and server hosted on an Oracle Cloud VM. It serves as a platform for showcasing portfolio content and provides various functionalities. The primary purpose of Den Lure Vind is to facilitate the testing of new concepts and techniques. It has played a crucial role in the my journey of acquiring in-depth knowledge of CSS and virtual machines.",
+			"stack": [
+				"Javascript",
+				"Node",
+				"Express",
+				"Postgres Database",
+				"HTML",
+				"CSS"
+			],
+			"image": "./images/projects/denlurevind.webp",
+			"link": "https://denlurevind.com/"
+		}
+	],
+	"wip": [
+		{
+			"name": "ListR",
+			"description": "ListR is a simple and efficient Android app designed for creating and managing lists. Developed primarily for personal use, its main purpose revolves around shopping lists. With ListR, users can easily create, save, and load lists, allowing for seamless organization and retrieval. Additionally, the app offers a convenient 'Copy to Clipboard' feature, enabling users to effortlessly duplicate lists for quick sharing or reference.",
+			"stack": ["Flutter", "Android SDK"],
+			"image": "./images/projects/listr.png",
+			"link": "https://play.google.com/store/apps/details?id=dsen.ListR",
+			"show": false
+		}
+	],
+	"skills": [
+		{
+			"title": "Computer Science",
+			"description": "Bachelors Degree: Agile Security Audit of Picterus",
+			"location": "NTNU, Trondheim",
+			"image": "./images/work/ntnu.png",
+			"years": "3"
+		}
+	],
+	"work": [
+		{
+			"company": "Madsen Technologies",
+			"location": "Oslo, Norway",
+			"image": "./images/work/MT.svg",
+			"imageScale": 1,
+			"from": "05.2023",
+			"to": "Present",
+			"role": "Freelance Developer"
+		},
+		{
+			"company": "Sopra Steria",
+			"location": "Oslo, Norway",
+			"image": "./images/work/SopraSteria.png",
+			"imageScale": 1.5,
+			"from": "08.2021",
+			"to": "Present",
+			"role": "Full-stack Developer"
+		},
+		{
+			"company": "Sopra Steria",
+			"location": "Trondheim, Norway",
+			"image": "./images/work/SopraSteria.png",
+			"imageScale": 1.5,
+			"from": "06.2020",
+			"to": "08.2020",
+			"role": "Summer Intern"
+		},
+		{
+			"company": "NTNU",
+			"location": "Trondheim, Norway",
+			"image": "./images/work/ntnu.png",
+			"imageScale": 1,
+			"from": "01.2019",
+			"to": "08.2019",
+			"role": "Faculty Student Rep."
+		},
+		{
+			"company": "ABB",
+			"location": "Skien, Norway",
+			"image": "./images/work/ABB.svg",
+			"imageScale": 1.5,
+			"from": "06.2018",
+			"to": "08.2018",
+			"role": "Summer Intern"
+		}
+	]
+}

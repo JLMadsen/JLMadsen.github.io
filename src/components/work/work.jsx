@@ -1,96 +1,50 @@
-import { Row, Col } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import StyledTitle from "../styledTitle";
 
 function Work() {
-	const data = require("../../data/work.json");
+	const work = require("../../data/content.json").work;
 	const isMobile = window.innerWidth < 780;
-
-	if (isMobile) {
-		return <></>;
-	}
-
-	const renderWork = (work) => {
-		return (
-			<>
-				<div className="fs-4">{work.company} </div>
-				<div className="fs-5">{work.location}</div>
-				<div className="fs-5">{work.role}</div>
-				<div className="fs-5">
-					{work.from} - {work.to}
-				</div>
-			</>
-		);
-	};
 
 	return (
 		<div className="mt-4 mb-4">
-			<StyledTitle title={"Work Experience"} />
+			<StyledTitle title={"Work"} />
 			<Col className="mt-4" style={{ margin: "auto" }}>
-				{[...data?.work, null].map((a, idx) => {
-					if (a === null) return;
+				{[...work, null].map((w) => {
+					if (w == null) return;
 					return (
-						<>
-							<Row className="m-0 p-0">
-								<Col className="d-flex m-0 p-0">
-									{idx % 2 === 0 ? (
-										<>
-											<Col
-												className="pe-4"
-												style={{
-													textAlign: "right",
-													maxWidth:
-														"calc(100% - 40px)",
-												}}
-											>
-												{renderWork(a)}
-											</Col>
-											<Col style={{ maxWidth: "40px" }}>
-												<Row
-													className="h-50 m-0 p-0"
-													style={{
-														borderBottom:
-															"2px solid #666",
-													}}
-												></Row>
-											</Col>
-										</>
-									) : null}
-								</Col>
-								<Col
+						<div
+							className={`p-2 mb-4 shadow d-flex ${
+								isMobile ? "w-100" : "w-50"
+							}`}
+							style={{
+								borderRadius: "15px",
+								background: "white",
+								marginLeft: "auto",
+								marginRight: "auto",
+							}}
+						>
+							<div>
+								<img
+									src={w.image}
 									style={{
-										width: "2px",
-										maxWidth: "2px",
-										margin: "0px",
-										padding: "0px",
-										borderLeft: "2px solid #666",
+										height: "100px",
+										aspectRatio: "1",
+										objectFit: "contain",
+										padding: "5px",
+										margin: isMobile ? "0px" : "10px",
 									}}
-								></Col>
-								<Col className="d-flex m-0 p-0">
-									{idx % 2 !== 0 ? (
-										<>
-											<Col style={{ maxWidth: "40px" }}>
-												<Row
-													className="h-50 m-0 p-0"
-													style={{
-														borderBottom:
-															"2px solid #666",
-													}}
-												></Row>
-											</Col>
-											<Col
-												className="ps-4"
-												style={{
-													maxWidth:
-														"calc(100% - 40px)",
-												}}
-											>
-												{renderWork(a)}
-											</Col>
-										</>
-									) : null}
-								</Col>
-							</Row>
-						</>
+									alt={`${w.company} logo`}
+								/>
+							</div>
+							<div className="d-inline-block">
+								<div className="fs-5 fw-bold">{w.role}</div>
+								<div className="fs-5">{w.company}</div>
+								<div className="fs-6">
+									{w.from} - {w.to}
+								</div>
+								<div className="fs-6">{w.location}</div>
+							</div>
+						</div>
 					);
 				})}
 			</Col>

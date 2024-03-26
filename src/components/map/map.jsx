@@ -10,7 +10,7 @@ function Map() {
 			}}
 		>
 			<img
-				src="./images/norway.svg"
+				src="./images/map/norway.svg"
 				style={{
 					maxHeight: "40em",
 					opacity: ".1",
@@ -26,7 +26,7 @@ function Map() {
 				}}
 			>
 				<img
-					src="./images/pin.svg"
+					src="./images/map/pin.svg"
 					style={{
 						filter: "saturate(100)",
 						maxHeight: "2.4em",

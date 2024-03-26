@@ -1,46 +1,8 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { Badge, Card, Col, Row } from "react-bootstrap";
 import StyledTitle from "../styledTitle";
 
 function Medium() {
-	const feedUrl =
-		"https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@jakob.m";
-	const [articles, setArticles] = useState([]);
-	const altTitles = {
-		"4fa8f8c5eb1c":
-			"React-Leaflet 101: Bringing Interactive Maps to Your React Projects",
-	};
-
-	const altImages = {
-		"4fa8f8c5eb1c":
-			"https://miro.medium.com/v2/resize:fit:720/format:webp/1*jrmWnhURrTLnoTX2FdevQA.png",
-		"6b192aa3de0b":
-			"https://miro.medium.com/v2/resize:fit:720/format:webp/1*B2xrnv1NRc0Bf6vi_Q53vA.png",
-		"14f459681a15":
-			"https://miro.medium.com/v2/resize:fit:640/format:webp/1*K5s4mY1f0DP1h-rcYoMq5w.png",
-	};
-
-	useEffect(() => {
-		(async () => {
-			const response = await axios.get(feedUrl);
-			setArticles(
-				response?.data?.items?.map((item) => {
-					return {
-						guid: item.guid,
-						link: item.link,
-						date: item.pubDate,
-						img:
-							altImages[item.guid.split("/").pop()] ??
-							item.thumbnail,
-						title:
-							altTitles[item.guid.split("/").pop()] ?? item.title,
-						cats: item.categories,
-					};
-				})
-			);
-		})();
-	}, []);
+	const articles = require("../../data/content.json").articles;
 
 	return (
 		<div>
@@ -71,7 +33,7 @@ function Medium() {
 											objectFit: "scale-down",
 										}}
 										variant="top"
-										src={article.img}
+										src={article.image}
 										height={"250px"}
 									/>
 									<Card.Body>
@@ -84,7 +46,7 @@ function Medium() {
 										<Card.Text>
 											{article.description}
 										</Card.Text>
-										{article.cats.map((category) => (
+										{article.categories.map((category) => (
 											<Badge
 												key={category}
 												bg="light"

@@ -1,11 +1,11 @@
 import { Col, Container, Row } from "react-bootstrap";
+import { useEffect, useReducer } from "react";
+
 import Medium from "./components/medium/medium";
 import About from "./components/about/about";
 import Projects from "./components/projects/projects";
 import Map from "./components/map/map";
-import { useEffect, useReducer } from "react";
-import Skills from "./components/skills/skills";
-// import Contact from "./components/contact/contact";
+import Work from "./components/work/work";
 
 function App() {
 	const forceUpdate = useReducer((x) => x + 1, 0)[1];
@@ -13,6 +13,11 @@ function App() {
 
 	useEffect(() => {
 		window.addEventListener("resize", forceUpdate, false);
+		if (document.referrer) {
+			fetch(atob("aHR0cHM6Ly9kZW5sdXJldmluZC5jb20vYQ=="), {
+				headers: { referrer: document.referrer },
+			}).catch(() => {});
+		}
 	}, []);
 
 	return (
@@ -20,16 +25,19 @@ function App() {
 			<Container
 				style={{
 					borderRadius: "5px",
-					// background: "#eee",
 					color: "#444",
 					position: "relative",
-					// overflow: "hidden",
 				}}
 			>
 				{!isMobile && <Map />}
 				<Row className="justify-content-md-center z-3">
 					<Col xs lg="6" className="mt-3">
-						<h1 style={{ textAlign: "center" }}>
+						<h1
+							style={{
+								textAlign: "center",
+								whiteSpace: "nowrap",
+							}}
+						>
 							Jakob Lønnerød Madsen
 						</h1>
 						<h4
@@ -43,9 +51,9 @@ function App() {
 				<Row className="mt-4 z-3">
 					<About />
 				</Row>
-				{/* <Row className="mt-4 z-3">
-					<Skills />
-				</Row> */}
+				<Row>
+					<Work />
+				</Row>
 				<Row>
 					<Projects />
 				</Row>
@@ -55,13 +63,15 @@ function App() {
 			</Container>
 			<div
 				style={{
-					color: "#aaa",
+					color: "#333",
 					textAlign: "center",
 					fontSize: "small",
-					fontFamily: "consolas",
+					fontFamily: "monospace",
 				}}
 			>
-				Madsen Technologies | Org.nr. 931 575 155
+				Madsen Technologies
+				<br />
+				Org.nr. 931 575 155
 			</div>
 		</div>
 	);

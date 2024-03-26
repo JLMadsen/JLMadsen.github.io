@@ -3,9 +3,25 @@ import StyledTitle from "../styledTitle";
 import WavyLink from "../wavyLink";
 
 function Projects() {
-	const data = require("../../data/projects.json");
+	const projects = require("../../data/content.json").projects;
 	const isMobile = window.innerWidth < 750;
 	let previousProject = null;
+
+	const calculateStyle = (reversed) => {
+		return {
+			height: isMobile ? "160px" : "18vw",
+			maxHeight: isMobile ? "400px" : "270px",
+			transform: !isMobile
+				? `perspective(400px) rotate3D(0, -1, 0, ${
+						reversed ? "" : "-"
+				  }8deg)`
+				: null,
+			boxShadow: `rgba(0, 0, 0, 0.5) ${
+				reversed ? "" : "-"
+			}10px 20px 40px`,
+			margin: `${isMobile ? "auto" : "0 40% 0 auto"}`,
+		};
+	};
 
 	const renderText = (project, isMobile, reversed) => {
 		if (!project) return <div />;
@@ -49,22 +65,22 @@ function Projects() {
 					alignItems: "flex-end",
 				}}
 			>
-				<img
-					style={{
-						height: isMobile ? "160px" : "18vw",
-						maxHeight: isMobile ? "400px" : "270px",
-						transform: !isMobile
-							? `perspective(400px) rotate3D(0, -1, 0, ${
-									reversed ? "" : "-"
-							  }8deg)`
-							: null,
-						boxShadow: `rgba(0, 0, 0, 0.5) ${
-							reversed ? "" : "-"
-						}10px 20px 40px`,
-						margin: `${isMobile ? "auto" : "0 40% 0 auto"}`,
-					}}
-					src={project.image}
-				/>
+				{project.image.includes(".webp") ? (
+					<picture>
+						<source srcSet={project.image} />
+						<img
+							src={project.image}
+							alt={`${project.name} image`}
+							style={calculateStyle(reversed)}
+						/>
+					</picture>
+				) : (
+					<img
+						style={calculateStyle(reversed)}
+						src={project.image}
+						alt={`${project.name} image`}
+					/>
+				)}
 			</div>
 		);
 	};
@@ -73,7 +89,7 @@ function Projects() {
 		<div>
 			<Row className="justify-content-md-center mt-2">
 				<StyledTitle title={"Projects"} />
-				{[...data.projects, null].map((project, idx) => {
+				{[...projects, null].map((project, idx) => {
 					const reversed = idx % 2 === 0;
 					const text = renderText(
 						!isMobile ? previousProject : project,

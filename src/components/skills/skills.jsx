@@ -2,7 +2,7 @@ import { Row } from "react-bootstrap";
 import StyledTitle from "../styledTitle";
 
 function Skills() {
-	const { skills } = require("../../data/skills.json");
+	const { skills } = require("../../data/content.json").skills;
 
 	return (
 		<Row className="justify-content-md-center mt-2">
